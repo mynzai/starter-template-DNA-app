@@ -1,0 +1,51 @@
+{
+  "id": "ai-saas-nextjs",
+  "name": "AI SaaS Platform",
+  "description": "Full-featured SaaS platform with AI integration, authentication, and payments",
+  "type": "ai-saas",
+  "framework": "nextjs",
+  "version": "1.0.0",
+  "author": "DNA Templates",
+  "tags": ["ai", "saas", "nextjs", "typescript", "production-ready"],
+  "dnaModules": ["auth-jwt", "ai-openai", "payments-stripe", "real-time-websocket"],
+  "requirements": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "features": [
+    "Multi-LLM support (OpenAI, Anthropic)",
+    "User authentication with JWT",
+    "Stripe payment integration",
+    "Real-time chat interface",
+    "Vector database for RAG",
+    "Responsive dashboard UI",
+    "Admin panel with analytics",
+    "Email notifications",
+    "Rate limiting and usage tracking",
+    "API key management"
+  ],
+  "complexity": "advanced",
+  "estimatedSetupTime": 8,
+  "lastUpdated": "2024-12-06T00:00:00Z",
+  "downloadCount": 1250,
+  "rating": 4.8,
+  "variables": [
+    {
+      "name": "projectName",
+      "description": "Name of your project",
+      "required": true
+    },
+    {
+      "name": "openaiApiKey",
+      "description": "OpenAI API Key (can be added later)",
+      "required": false,
+      "sensitive": true
+    },
+    {
+      "name": "stripeApiKey",
+      "description": "Stripe API Key (can be added later)",
+      "required": false,
+      "sensitive": true
+    }
+  ]
+}

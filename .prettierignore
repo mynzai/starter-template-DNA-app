@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+out/
+target/
+
+# Generated files
+*.generated.ts
+*.generated.js
+
+# Logs
+*.log
+
+# Coverage reports
+coverage/
+
+# Nx cache
+.nx/
+
+# IDEs
+.vscode/
+.idea/

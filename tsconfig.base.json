@@ -1,0 +1,33 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "lib": ["es2020", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "strict": true,
+    "noImplicitAny": false,
+    "exactOptionalPropertyTypes": false,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": false,
+    "paths": {
+      "@dna/core": ["libs/core/src/index.ts"],
+      "@dna/template-engine": ["libs/template-engine/src/index.ts"],
+      "@dna/cli": ["libs/cli/src/index.ts"],
+      "@dna/shared": ["libs/shared/src/index.ts"],
+      "@dna/types": ["libs/types/src/index.ts"],
+      "@dna/testing": ["libs/testing/src/index.ts"]
+    }
+  },
+  "exclude": ["node_modules", "tmp"]
+}

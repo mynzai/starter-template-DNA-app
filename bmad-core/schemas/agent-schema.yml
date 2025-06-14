@@ -1,0 +1,185 @@
+# BMAD Agent Configuration Schema
+# This schema defines the structure for BMAD Method agent configuration files
+
+type: object
+required:
+  - agent
+  - dependencies
+
+properties:
+  agent:
+    type: object
+    description: Core agent configuration
+    required:
+      - name
+      - id
+      - title
+      - description
+    properties:
+      name:
+        type: string
+        description: Human-friendly name of the agent (e.g., 'John', 'Mary')
+        examples:
+          - John
+          - Mary
+          - Winston
+          - Sarah
+          - Bob
+
+      id:
+        type: string
+        pattern: ^[a-z][a-z0-9-]*$
+        description: Unique identifier for the agent, lowercase with hyphens
+        examples:
+          - pm
+          - analyst
+          - architect
+          - po
+          - dev
+
+      title:
+        type: string
+        description: Professional title or role of the agent
+        examples:
+          - Product Manager
+          - Business Analyst
+          - Architect
+          - Product Owner
+
+      description:
+        type: string
+        description: Detailed description of the agent's purpose and capabilities
+        minLength: 20
+
+      customize:
+        type: string
+        description: Optional customization instructions for the agent's behavior and personality
+        default: ''
+
+      startup:
+        type: array
+        description: Startup instructions executed when the agent is activated
+        items:
+          type: string
+        examples:
+          - - 'Let the User Know what Tasks you can perform in a numbered list for user selection.'
+            - 'Execute the Full Tasks as Selected.'
+
+  dependencies:
+    type: object
+    description: Resources required by this agent
+    required:
+      - persona
+    properties:
+      persona:
+        type: string
+        description: Reference to the persona file (without extension) in bmad-core/personas/
+        examples:
+          - pm
+          - analyst
+          - architect
+          - po
+          - dev
+
+      tasks:
+        type: array
+        description: List of task files (without extension) from bmad-core/tasks/
+        items:
+          type: string
+          pattern: ^[a-z][a-z0-9-]*$
+        uniqueItems: true
+        examples:
+          - - create-doc-from-template
+            - execute-checklist
+            - correct-course
+
+      templates:
+        type: array
+        description: List of template files (without extension) from bmad-core/templates/
+        items:
+          type: string
+          pattern: ^[a-z][a-z0-9-]*(-tmpl)?$
+        uniqueItems: true
+        examples:
+          - - prd-tmpl
+            - architecture-tmpl
+            - story-tmpl
+
+      checklists:
+        type: array
+        description: List of checklist files (without extension) from bmad-core/checklists/
+        items:
+          type: string
+          pattern: ^[a-z][a-z0-9-]*(-checklist)?$
+        uniqueItems: true
+        default: []
+        examples:
+          - - pm-checklist
+            - architect-checklist
+            - po-master-checklist
+
+      data:
+        type: array
+        description: List of data files (without extension) from bmad-core/data/
+        items:
+          type: string
+          pattern: ^[a-z][a-z0-9-]*$
+        uniqueItems: true
+        default: []
+        examples:
+          - - technical-preferences
+            - bmad-kb
+
+      utils:
+        type: array
+        description: List of utility files (without extension) from bmad-core/utils/
+        items:
+          type: string
+          pattern: ^[a-z][a-z0-9-]*$
+        uniqueItems: true
+        default: []
+        examples:
+          - - template-format
+
+  environments:
+    type: object
+    description: Optional environment-specific configurations
+    properties:
+      web:
+        type: object
+        description: Web environment configuration
+        properties:
+          available:
+            type: boolean
+            description: Whether this agent is available in web environments
+            default: true
+
+          description:
+            type: string
+            description: Web-specific description of the agent's capabilities
+
+          max_size:
+            type: integer
+            description: Maximum character size for web bundle
+            minimum: 1000
+
+      ide:
+        type: object
+        description: IDE environment configuration
+        properties:
+          available:
+            type: boolean
+            description: Whether this agent is available in IDE environments
+            default: true
+
+          description:
+            type: string
+            description: IDE-specific description of the agent's capabilities
+
+          max_size:
+            type: integer
+            description: Maximum character size for IDE agent
+            minimum: 1000
+            maximum: 20000
+
+additionalProperties: false

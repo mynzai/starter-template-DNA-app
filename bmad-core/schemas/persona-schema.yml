@@ -1,0 +1,156 @@
+# BMAD Persona Schema Definition
+# This schema defines the structure for BMAD persona files (.md)
+# Personas provide the base personality and principles for agents
+
+type: object
+required:
+  - role
+  - persona
+  - core_principles
+
+properties:
+  role:
+    type: string
+    description: 'The title/role name of the persona'
+    pattern: '^# Role: .+ Agent$'
+    examples:
+      - '# Role: Product Manager (PM) Agent'
+      - '# Role: Business Analyst Agent'
+      - '# Role: Fullstack Architect Agent'
+
+  persona:
+    type: object
+    description: 'Core identity and style definition'
+    required:
+      - role
+      - style
+    properties:
+      role:
+        type: string
+        description: 'Professional role description'
+        minLength: 20
+        examples:
+          - 'Investigative Product Strategist & Market-Savvy PM'
+          - 'Holistic System Architect & Full-Stack Technical Leader'
+
+      style:
+        type: string
+        description: 'Communication and working style'
+        minLength: 50
+        examples:
+          - 'Analytical, inquisitive, data-driven, user-focused, pragmatic. Aims to build a strong case for product decisions through efficient research and clear synthesis of findings and collaborating with the user.'
+
+  core_principles:
+    type: object
+    description: 'Core principles that guide behavior (Always Active)'
+    pattern: "^## Core .* Principles \\(Always Active\\)$"
+    minProperties: 5
+    properties:
+      principle_list:
+        type: array
+        minItems: 5
+        items:
+          type: object
+          required:
+            - title
+            - description
+          properties:
+            title:
+              type: string
+              description: 'Principle name in bold'
+              pattern: "^\\*\\*.+:\\*\\*$"
+            description:
+              type: string
+              description: 'Detailed explanation of the principle'
+              minLength: 50
+
+  critical_startup_operating_instructions:
+    type: object
+    description: 'Optional startup instructions (deprecated - moved to agent YAML)'
+    pattern: '^## Critical Start.*Operating Instructions.*$'
+    properties:
+      instructions:
+        type: array
+        description: 'List of startup instructions'
+        minItems: 1
+        items:
+          type: string
+          minLength: 20
+
+# Optional sections that may appear in personas
+additionalProperties: true
+
+definitions:
+  optional_sections:
+    domain_expertise:
+      type: object
+      description: 'Detailed expertise areas (commonly used by technical personas)'
+      pattern: '^## Domain Expertise$'
+      properties:
+        categories:
+          type: array
+          items:
+            type: object
+            properties:
+              title:
+                type: string
+                pattern: '^### .+$'
+              items:
+                type: array
+                items:
+                  type: string
+
+    task_execution_patterns:
+      type: object
+      description: 'Specific patterns for executing tasks'
+      pattern: '^## .+ Task Execution$'
+
+    expertise_areas:
+      type: object
+      description: 'Simplified expertise listing'
+      pattern: '^## (Core )?Expertise$'
+
+    responsibilities:
+      type: object
+      description: 'Key responsibilities'
+      pattern: '^## Responsibilities$'
+
+    working_style:
+      type: object
+      description: 'Approach to work'
+      pattern: '^## Working Style$'
+
+    motivations:
+      type: object
+      description: 'What drives the persona'
+      pattern: '^## Motivations$'
+
+# Validation rules
+# Note: Startup instructions validation removed as they now reside in agent YAML files
+
+# Examples
+examples:
+  product_manager:
+    role: '# Role: Product Manager (PM) Agent'
+    persona:
+      role: 'Investigative Product Strategist & Market-Savvy PM'
+      style: 'Analytical, inquisitive, data-driven, user-focused, pragmatic. Aims to build a strong case for product decisions through efficient research and clear synthesis of findings and collaborating with the user.'
+    core_principles:
+      - title: '**Deeply Understand "Why":**'
+        description: 'Always strive to understand the underlying problem, user needs, and business objectives before jumping to solutions.'
+      - title: '**Champion the User:**'
+        description: 'Maintain a relentless focus on the target user. All decisions should be viewed through the lens of value delivered.'
+    # Note: startup instructions now defined in agent YAML file
+
+  architect:
+    role: '# Role: Fullstack Architect Agent'
+    persona:
+      role: 'Holistic System Architect & Full-Stack Technical Leader'
+      style: 'Comprehensive, pragmatic, user-centric, technically deep yet accessible. Bridges all layers of the stack with equal expertise.'
+    domain_expertise:
+      core_fullstack:
+        title: '### Core Full-Stack Architecture'
+        items:
+          - 'End-to-End System Design'
+          - 'Cross-Stack Performance Optimization'
+          - 'Full-Stack Security Architecture'

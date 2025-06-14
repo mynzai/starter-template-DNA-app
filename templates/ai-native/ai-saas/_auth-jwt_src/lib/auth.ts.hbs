@@ -1,0 +1,173 @@
+/**
+ * Authentication utilities for {{project.pascalName}}
+ * JWT-based authentication system
+ */
+
+import jwt from 'jsonwebtoken';
+import { NextRequest } from 'next/server';
+
+const JWT_SECRET = process.env.JWT_SECRET!;
+const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
+
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+  role: 'user' | 'admin';
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface JWTPayload {
+  userId: string;
+  email: string;
+  role: string;
+  iat?: number;
+  exp?: number;
+}
+
+/**
+ * Generate a JWT token for a user
+ */
+export function generateToken(user: User): string {
+  const payload: JWTPayload = {
+    userId: user.id,
+    email: user.email,
+    role: user.role,
+  };
+
+  return jwt.sign(payload, JWT_SECRET, {
+    expiresIn: JWT_EXPIRES_IN,
+  });
+}
+
+/**
+ * Verify and decode a JWT token
+ */
+export function verifyToken(token: string): JWTPayload | null {
+  try {
+    return jwt.verify(token, JWT_SECRET) as JWTPayload;
+  } catch (error) {
+    console.error('Token verification failed:', error);
+    return null;
+  }
+}
+
+/**
+ * Extract token from Authorization header
+ */
+export function extractTokenFromHeader(authHeader: string | null): string | null {
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return null;
+  }
+  
+  return authHeader.substring(7); // Remove 'Bearer ' prefix
+}
+
+/**
+ * Get user from request (for API routes)
+ */
+export function getUserFromRequest(request: NextRequest): JWTPayload | null {
+  const authHeader = request.headers.get('authorization');
+  const token = extractTokenFromHeader(authHeader);
+  
+  if (!token) {
+    return null;
+  }
+  
+  return verifyToken(token);
+}
+
+/**
+ * Hash password using a simple implementation
+ * In production, use bcrypt or similar
+ */
+export async function hashPassword(password: string): Promise<string> {
+  // This is a simplified implementation
+  // In production, use bcrypt:
+  // const bcrypt = require('bcrypt');
+  // return bcrypt.hash(password, 10);
+  
+  const encoder = new TextEncoder();
+  const data = encoder.encode(password + JWT_SECRET);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+/**
+ * Verify password against hash
+ */
+export async function verifyPassword(password: string, hash: string): Promise<boolean> {
+  const hashedPassword = await hashPassword(password);
+  return hashedPassword === hash;
+}
+
+/**
+ * Check if user has required role
+ */
+export function hasRole(user: JWTPayload, requiredRole: string): boolean {
+  const roleHierarchy = {
+    'user': 1,
+    'admin': 2,
+  };
+  
+  const userLevel = roleHierarchy[user.role as keyof typeof roleHierarchy] || 0;
+  const requiredLevel = roleHierarchy[requiredRole as keyof typeof roleHierarchy] || 0;
+  
+  return userLevel >= requiredLevel;
+}
+
+/**
+ * Middleware to protect API routes
+ */
+export function withAuth(handler: (request: NextRequest, user: JWTPayload) => Promise<Response>) {
+  return async (request: NextRequest): Promise<Response> => {
+    const user = getUserFromRequest(request);
+    
+    if (!user) {
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized' }),
+        { 
+          status: 401,
+          headers: { 'Content-Type': 'application/json' }
+        }
+      );
+    }
+    
+    return handler(request, user);
+  };
+}
+
+/**
+ * Middleware to protect API routes with role check
+ */
+export function withRole(requiredRole: string) {
+  return function(handler: (request: NextRequest, user: JWTPayload) => Promise<Response>) {
+    return async (request: NextRequest): Promise<Response> => {
+      const user = getUserFromRequest(request);
+      
+      if (!user) {
+        return new Response(
+          JSON.stringify({ error: 'Unauthorized' }),
+          { 
+            status: 401,
+            headers: { 'Content-Type': 'application/json' }
+          }
+        );
+      }
+      
+      if (!hasRole(user, requiredRole)) {
+        return new Response(
+          JSON.stringify({ error: 'Forbidden: Insufficient permissions' }),
+          { 
+            status: 403,
+            headers: { 'Content-Type': 'application/json' }
+          }
+        );
+      }
+      
+      return handler(request, user);
+    };
+  };
+}

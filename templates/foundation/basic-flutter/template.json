@@ -1,0 +1,43 @@
+{
+  "id": "flutter-basic",
+  "name": "Flutter Foundation",
+  "description": "Clean Flutter starter with comprehensive testing and best practices",
+  "type": "foundation",
+  "framework": "flutter",
+  "version": "1.0.0",
+  "author": "DNA Templates",
+  "tags": ["flutter", "foundation", "mobile", "testing"],
+  "dnaModules": ["testing-comprehensive"],
+  "requirements": {
+    "frameworks": ["Flutter 3.16+", "Dart 3.2+"]
+  },
+  "features": [
+    "Material Design 3 theming",
+    "Comprehensive testing setup",
+    "State management with Riverpod",
+    "Localization support",
+    "Null safety enabled",
+    "Golden file testing",
+    "Widget testing",
+    "Integration testing",
+    "Clean architecture",
+    "Code generation ready"
+  ],
+  "complexity": "beginner",
+  "estimatedSetupTime": 4,
+  "lastUpdated": "2024-12-06T00:00:00Z",
+  "downloadCount": 1834,
+  "rating": 4.7,
+  "variables": [
+    {
+      "name": "projectName",
+      "description": "Name of your Flutter app",
+      "required": true
+    },
+    {
+      "name": "organization",
+      "description": "Organization name (e.g., com.company)",
+      "required": true
+    }
+  ]
+}

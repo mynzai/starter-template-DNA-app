@@ -1,0 +1,153 @@
+# BMAD Agent Team Configuration Schema
+# This schema defines the structure for BMAD agent team configuration files
+# Teams bundle multiple agents and workflows for specific project types
+
+type: object
+required:
+  - bundle
+  - agents
+  - workflows
+
+properties:
+  bundle:
+    type: object
+    description: Team bundle metadata and configuration
+    required:
+      - name
+      - description
+    properties:
+      name:
+        type: string
+        description: Human-friendly name of the team bundle
+        pattern: '^Team .+$'
+        examples:
+          - 'Team Fullstack'
+          - 'Team No UI'
+          - 'Team All'
+
+      description:
+        type: string
+        description: Detailed description of the team's purpose, capabilities, and use cases
+        minLength: 20
+        maxLength: 500
+
+  agents:
+    type: array
+    description: List of agents included in this team bundle
+    minItems: 2
+    items:
+      type: string
+      description: Agent ID matching agents/{agent}.yml or special value '*' for all agents
+      pattern: "^([a-z-]+|\\*)$"
+      examples:
+        - 'bmad'
+        - 'analyst'
+        - 'pm'
+        - 'ux-expert'
+        - 'architect'
+        - 'po'
+        - 'sm'
+        - 'dev'
+        - 'qa'
+        - '*'
+    uniqueItems: true
+    allOf:
+      - description: Must include 'bmad' as the orchestrator
+        contains:
+          const: 'bmad'
+
+  workflows:
+    type: array
+    description: List of workflows this team can execute
+    minItems: 1
+    items:
+      type: string
+      description: Workflow ID matching bmad-core/workflows/{workflow}.yml
+      enum:
+        - 'brownfield-fullstack'
+        - 'brownfield-service'
+        - 'brownfield-ui'
+        - 'greenfield-fullstack'
+        - 'greenfield-service'
+        - 'greenfield-ui'
+    uniqueItems: true
+
+# No additional properties allowed
+additionalProperties: false
+
+# Validation rules
+allOf:
+  - if:
+      properties:
+        agents:
+          contains:
+            const: '*'
+    then:
+      properties:
+        agents:
+          maxItems: 2
+          description: When using wildcard '*', only 'bmad' and '*' should be present
+
+  - if:
+      properties:
+        bundle:
+          properties:
+            name:
+              const: 'Team No UI'
+    then:
+      properties:
+        agents:
+          not:
+            contains:
+              const: 'ux-expert'
+        workflows:
+          not:
+            contains:
+              enum: ['brownfield-ui', 'greenfield-ui']
+
+# Examples showing valid team configurations
+examples:
+  minimal_team:
+    bundle:
+      name: 'Team Minimal'
+      description: 'Minimal team for basic project planning and architecture without implementation'
+    agents:
+      - bmad
+      - analyst
+      - architect
+    workflows:
+      - greenfield-service
+
+  fullstack_team:
+    bundle:
+      name: 'Team Fullstack'
+      description: 'Comprehensive full-stack development team capable of handling both greenfield application development and brownfield enhancement projects. This team combines strategic planning, user experience design, and holistic system architecture to deliver complete solutions from concept to deployment.'
+    agents:
+      - bmad
+      - analyst
+      - pm
+      - ux-expert
+      - architect
+      - po
+    workflows:
+      - brownfield-fullstack
+      - brownfield-service
+      - brownfield-ui
+      - greenfield-fullstack
+      - greenfield-service
+      - greenfield-ui
+
+  all_agents_team:
+    bundle:
+      name: 'Team All'
+      description: 'This is a full organization of agents and includes every possible agent. This will produce the largest bundle but give the most options for discussion in a single session'
+    agents:
+      - bmad
+      - '*'
+    workflows:
+      - brownfield-fullstack
+      - brownfield-service
+      - brownfield-ui
+      - greenfield-fullstack
+      - greenfield-service
+      - greenfield-ui

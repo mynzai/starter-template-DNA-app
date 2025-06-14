@@ -1,0 +1,44 @@
+{
+  "id": "tauri-realtime-collaboration",
+  "name": "Tauri Real-time Collaboration",
+  "description": "High-performance desktop app with real-time collaboration features",
+  "type": "real-time-collaboration",
+  "framework": "tauri",
+  "version": "1.0.0",
+  "author": "DNA Templates",
+  "tags": ["tauri", "desktop", "real-time", "collaboration", "performance"],
+  "dnaModules": ["real-time-websocket", "auth-jwt", "testing-comprehensive"],
+  "requirements": {
+    "node": ">=18.0.0",
+    "frameworks": ["Tauri 2.0+", "Rust 1.75+"]
+  },
+  "features": [
+    "Cross-platform desktop app",
+    "Real-time document editing",
+    "WebSocket communication",
+    "Offline synchronization",
+    "User presence indicators",
+    "Version control system",
+    "File sharing",
+    "Video/audio calls",
+    "Screen sharing",
+    "Plugin architecture"
+  ],
+  "complexity": "advanced",
+  "estimatedSetupTime": 10,
+  "lastUpdated": "2024-12-06T00:00:00Z",
+  "downloadCount": 432,
+  "rating": 4.5,
+  "variables": [
+    {
+      "name": "projectName",
+      "description": "Name of your collaboration app",
+      "required": true
+    },
+    {
+      "name": "appIdentifier",
+      "description": "App identifier (e.g., com.company.app)",
+      "required": true
+    }
+  ]
+}

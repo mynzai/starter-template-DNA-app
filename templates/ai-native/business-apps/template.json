@@ -1,0 +1,50 @@
+{
+  "id": "react-native-business",
+  "name": "React Native Business App",
+  "description": "Enterprise-ready React Native application with comprehensive features",
+  "type": "business-apps",
+  "framework": "react-native",
+  "version": "2.1.0",
+  "author": "DNA Templates",
+  "tags": ["react-native", "business", "enterprise", "ios", "android"],
+  "dnaModules": ["auth-oauth", "payments-stripe", "real-time-websocket"],
+  "requirements": {
+    "node": ">=18.0.0",
+    "frameworks": ["React Native 0.72+"]
+  },
+  "features": [
+    "OAuth 2.0 authentication",
+    "Dark/light theme support",
+    "Offline-first architecture",
+    "Analytics integration",
+    "Code push updates",
+    "Comprehensive testing",
+    "Redux state management",
+    "Navigation with React Navigation",
+    "Form validation",
+    "File upload/download"
+  ],
+  "complexity": "intermediate",
+  "estimatedSetupTime": 7,
+  "lastUpdated": "2024-12-06T00:00:00Z",
+  "downloadCount": 654,
+  "rating": 4.4,
+  "variables": [
+    {
+      "name": "projectName",
+      "description": "Name of your business app",
+      "required": true
+    },
+    {
+      "name": "companyName",
+      "description": "Company name for branding",
+      "required": true
+    },
+    {
+      "name": "oauthProvider",
+      "description": "OAuth provider (google, microsoft, okta)",
+      "required": false,
+      "default": "google"
+    }
+  ]
+}
