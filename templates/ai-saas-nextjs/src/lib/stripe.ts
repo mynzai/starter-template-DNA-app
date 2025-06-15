@@ -28,6 +28,9 @@ export const PLANS = {
       ragQueries: 10,
       documentUploads: 5,
       maxContext: 3,
+      codeAnalyses: 5,
+      codeGenerations: 3,
+      codeOptimizations: 0,
       models: ['gpt-3.5-turbo'],
     },
   },
@@ -48,6 +51,9 @@ export const PLANS = {
       ragQueries: 100,
       documentUploads: 50,
       maxContext: 5,
+      codeAnalyses: 50,
+      codeGenerations: 25,
+      codeOptimizations: 10,
       models: ['gpt-3.5-turbo', 'gpt-4', 'claude-3-haiku'],
     },
   },
@@ -70,6 +76,9 @@ export const PLANS = {
       ragQueries: 500,
       documentUploads: 200,
       maxContext: 8,
+      codeAnalyses: 200,
+      codeGenerations: 100,
+      codeOptimizations: 50,
       models: ['gpt-3.5-turbo', 'gpt-4', 'gpt-4-turbo', 'claude-3-sonnet', 'claude-3-opus'],
     },
   },
@@ -94,6 +103,9 @@ export const PLANS = {
       ragQueries: -1, // unlimited
       documentUploads: -1, // unlimited
       maxContext: 15,
+      codeAnalyses: -1, // unlimited
+      codeGenerations: -1, // unlimited
+      codeOptimizations: -1, // unlimited
       models: ['gpt-3.5-turbo', 'gpt-4', 'gpt-4-turbo', 'claude-3-sonnet', 'claude-3-opus'],
     },
   },
