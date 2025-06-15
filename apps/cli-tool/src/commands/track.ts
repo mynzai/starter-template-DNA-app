@@ -7,6 +7,7 @@ import fs from 'fs-extra';
 import path from 'path';
 import chalk from 'chalk';
 import { enhancedLogger as logger, ICONS } from '../utils/enhanced-logger';
+import { gitAutomation } from '../lib/git-automation';
 
 interface TrackingSession {
   id: string;
@@ -123,6 +124,18 @@ async function startSession(options: any): Promise<void> {
     await saveCurrentSession(session);
     await addToSessionHistory(session);
 
+    // Auto-create feature branch if epic and story are provided
+    if (session.epic && session.story) {
+      try {
+        const branchName = await gitAutomation.createFeatureBranch(session.epic, session.story);
+        session.notes.push(`${new Date().toISOString()}: Auto-created branch: ${branchName}`);
+        await saveCurrentSession(session);
+        logger.success(`${ICONS.branch} Created feature branch: ${chalk.cyan(branchName)}`);
+      } catch (error) {
+        logger.debug(`Failed to create feature branch: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      }
+    }
+
     logger.success(`${ICONS.rocket} Started tracking session: ${session.id}`);
     logger.info(`Type: ${chalk.cyan(session.type)}`);
     if (session.epic) logger.info(`Epic: ${chalk.cyan(session.epic)}`);
@@ -168,6 +181,13 @@ async function updateProgress(options: any): Promise<void> {
 
     await saveCurrentSession(session);
 
+    // Trigger auto-commit if configured
+    try {
+      await gitAutomation.commitProgressUpdate(session);
+    } catch (error) {
+      logger.debug(`Git auto-commit failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+
     logger.success(`${ICONS.check} Progress updated`);
     displaySessionProgress(session);
 
@@ -198,6 +218,15 @@ async function endSession(options: any): Promise<void> {
 
     if (options.notes) {
       session.notes.push(`${new Date().toISOString()}: ${options.notes}`);
+    }
+
+    // Trigger feature completion commit if session completed successfully
+    if (session.status === 'completed') {
+      try {
+        await gitAutomation.commitFeatureCompletion(session);
+      } catch (error) {
+        logger.debug(`Git feature completion commit failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      }
     }
 
     // Update session in history

@@ -13,6 +13,8 @@ import { listCommand } from './commands/list';
 import { validateCommand } from './commands/validate';
 import { updateCommand } from './commands/update';
 import { testCommand } from './commands/test';
+import { trackCommand } from './commands/track';
+import { gitCommand } from './commands/git';
 import { environment } from './environments/environment';
 import { logger } from './utils/logger';
 import { handleError } from './utils/error-handler';
@@ -65,6 +67,8 @@ async function main(): Promise<void> {
     program.addCommand(validateCommand);
     program.addCommand(updateCommand);
     program.addCommand(testCommand);
+    program.addCommand(trackCommand);
+    program.addCommand(gitCommand);
 
     // Show help when no command is provided
     if (process.argv.length <= 2) {

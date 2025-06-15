@@ -158,35 +158,44 @@ This is an **Nx monorepo** with the following key structure:
 4. Follow acceptance criteria exactly
 5. Update story status and completion notes
 
-## ⚡ MANDATORY Progress Tracking & Testing Protocol
+## ⚡ MANDATORY Progress Tracking, Testing & Git Automation Protocol
 
-**CRITICAL**: ALWAYS follow this protocol for ALL development work. Epic 1 Story 5 established comprehensive tracking and testing systems that MUST be used consistently.
+**CRITICAL**: ALWAYS follow this protocol for ALL development work. Epic 1 Story 5 established comprehensive tracking and testing systems, and we now have automated Git workflows that MUST be used consistently.
 
 ### Before Starting ANY Story/Epic:
 
 ```bash
-# 1. Start progress tracking session
+# 1. Initialize Git automation (first time only)
+dna-cli git init --auto-commit --conventional
+
+# 2. Start progress tracking session (auto-creates feature branch)
 dna-cli track start --type=feature --epic=epic-X --story=epic-X-story-Y --notes="Initial story setup"
 
-# 2. Verify testing system is functional
+# 3. Verify testing system is functional
 npm test
 
-# 3. Check current quality gates status
+# 4. Check current quality gates status
 dna-cli track status
+
+# 5. Verify Git automation status
+dna-cli git status
 ```
 
 ### During Development (CONTINUOUS):
 
 ```bash
-# Update progress regularly (every 30-60 minutes)
+# Update progress regularly (every 30-60 minutes) - AUTO-COMMITS when configured
 # NOTE: If dna-cli is not built, use manual tracking in .dna-current-session.json
 dna-cli track progress --files-modified=X --tests-added=Y --coverage=Z --notes="Current progress update"
 
-# Run tests frequently to catch issues early
+# Run tests frequently to catch issues early - AUTO-COMMITS on success
 npx nx test testing         # For basic functionality
 npx nx test core           # For core library changes  
 npx nx test cli-tool       # For CLI functionality
-npm test                   # Run all tests
+npm test                   # Run all tests - triggers Git automation
+
+# Manual commit when needed (follows validation rules)
+dna-cli git commit --type=feat --message="Add new feature implementation"
 
 # Use the integrated pipeline for template generation
 # (Always use template-generation-pipeline.ts for any template work)
@@ -215,12 +224,15 @@ dna-cli track progress --quality-gates-status=passed --coverage=XX
 ### End Session (MANDATORY):
 
 ```bash
-# End tracking session with final status
+# End tracking session with final status - AUTO-COMMITS feature completion
 # NOTE: If dna-cli is not built, manually update .dna-current-session.json with final status
 dna-cli track end --status=completed --quality-gates-status=passed --notes="Story completed with all ACs fulfilled"
 
 # Generate session report (if CLI available)
 dna-cli track report --format=md --output=session-report.md
+
+# Review Git automation activity
+dna-cli git status
 ```
 
 ### Testing System Usage:
@@ -280,22 +292,59 @@ const { resolution, updatedModules } = await resolver.resolveConflicts(
 );
 ```
 
+### Git Automation System:
+
+**Automated Git Workflow Integration:**
+
+The system now provides automated Git operations integrated with progress tracking:
+
+- **Auto-Branch Creation**: Feature branches created automatically when starting sessions with epic/story
+- **Progress Commits**: Automatic commits on progress updates (configurable)
+- **Test Success Commits**: Auto-commits when tests pass and quality gates succeed
+- **Quality-Driven Commits**: Commits with remediation plans when quality gates fail
+- **Feature Completion Commits**: Automatic final commits when sessions complete successfully
+
+**Validation & Safety:**
+- Pre-commit validation (linting, type checking, coverage)
+- Rollback points created before automated operations
+- Commit message validation (conventional commits)
+- Blocked file detection (secrets, large files)
+- Quality gate integration
+
+**Git Automation Commands:**
+```bash
+# Configure automation
+dna-cli git config --auto-commit=true --push-remote=false --require-tests=true
+
+# Manual operations
+dna-cli git commit --type=feat --message="Your message"
+dna-cli git branch --epic=epic-2 --story=story-1
+dna-cli git auto-commit --force
+
+# Status and management
+dna-cli git status
+dna-cli git config --show
+```
+
 ### NEVER Skip These Steps:
 
 - ❌ **NEVER** start development without tracking session
-- ❌ **NEVER** commit without running tests
+- ❌ **NEVER** commit without running tests (automated validation prevents this)
 - ❌ **NEVER** use direct template generation (always use pipeline)
 - ❌ **NEVER** ignore quality gates failures
 - ❌ **NEVER** end session without completion metrics
+- ❌ **NEVER** disable Git automation without good reason
 
 ### Session Tracking Files:
 
 - `.dna-sessions.json` - Historical session data
 - `.dna-current-session.json` - Active session state
+- `.dna-git-config.json` - Git automation configuration
+- `.dna-git-rollback.json` - Rollback points for safety
 - `progress-session.md` - Manual tracking backup
 - `session-report.md` - Generated completion reports
 
-This protocol ensures consistency, quality, and progress visibility across all development work.
+This protocol ensures consistency, quality, and progress visibility across all development work with automated Git workflow integration.
 
 ### Key Reference Documents
 
@@ -307,6 +356,41 @@ This protocol ensures consistency, quality, and progress visibility across all d
 - `docs/api-reference.md` - API composition patterns
 - `progress-tracking.md` - Development session progress tracking system
 - `comprehensive-testing-framework.md` - Zero technical debt testing framework
+
+## MCP Integration Support (Future Feature)
+
+### MCP Module System for End-User Templates
+
+The project includes comprehensive MCP (Model Context Protocol) integration modules that allow generated templates to connect with Claude Desktop MCP servers. This is a **future feature** for end-users of the templates, not for development sessions.
+
+**Available MCP Modules:**
+- `docker-mcp.module.ts` - Container management through Docker MCP
+- `supabase-mcp.module.ts` - Database operations through Supabase MCP  
+- `context7-mcp.module.ts` - Conversation context management
+- `playwright-mcp.module.ts` - Browser automation and testing
+
+**Integration Path:**
+When templates are generated, they can include MCP integration code that connects to the user's Claude Desktop MCP servers. This enables templates to provide:
+- Automated deployment with Docker
+- Database setup with Supabase
+- Context-aware conversations
+- Automated testing with Playwright
+
+**Documentation:** See `docs/mcp-integration.md` for complete implementation details.
+
+**Note:** This MCP integration is for template end-users, not for Claude Code development sessions. For Claude Code agent MCP access, see the "Claude Code MCP Integration" section below.
+
+## Claude Code MCP Integration for Development
+
+To enable Claude Code agents to access MCP servers during development sessions, the MCP servers must be configured at the Claude Code level, not just Claude Desktop. 
+
+**Current Status:** MCP servers are configured in Claude Desktop but not accessible to Claude Code agents during this project development.
+
+**Future Enhancement:** When Claude Code gains native MCP support, development sessions could leverage:
+- GitHub MCP for repository operations
+- Docker MCP for container management during development
+- Database MCP servers for development database setup
+- Testing MCP servers for automated quality validation
 
 ## AI Integration Architecture (Epic 2 Implementation)
 

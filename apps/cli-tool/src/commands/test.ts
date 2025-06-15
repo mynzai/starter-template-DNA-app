@@ -13,6 +13,7 @@ import {
   mergeTestConfig 
 } from '@starter-template-dna/testing';
 import { Logger } from '../utils/logger';
+import { gitQualityIntegration } from '../lib/git-quality-integration';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 
@@ -102,6 +103,22 @@ export const testCommand = new Command('test')
 
       // Display results
       displayResults(result, logger, options);
+
+      // Trigger Git automation based on test results
+      try {
+        if (result.success && result.qualityGates?.passed) {
+          await gitQualityIntegration.autoCommitOnTestSuccess(result.results || []);
+        } else if (result.qualityGates) {
+          await gitQualityIntegration.commitQualityUpdate({
+            sessionData: await getCurrentSessionData(),
+            qualityResults: result.qualityGates,
+            testResults: result.results,
+            coverageReport: result.coverage
+          });
+        }
+      } catch (error) {
+        logger.debug(`Git integration failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      }
 
       // Handle failure cases
       if (!result.success) {
@@ -378,5 +395,17 @@ function displayFailureDetails(result: any, logger: Logger): void {
         console.log(`    • ${failure.gate}: ${failure.metric} (${failure.actual} vs ${failure.expected})`);
       });
     });
+  }
+}
+
+async function getCurrentSessionData(): Promise<any> {
+  try {
+    const sessionFile = path.join(process.cwd(), '.dna-current-session.json');
+    if (await fs.pathExists(sessionFile)) {
+      return await fs.readJson(sessionFile);
+    }
+    return null;
+  } catch {
+    return null;
   }
 }
