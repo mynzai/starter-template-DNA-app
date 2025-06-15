@@ -25,8 +25,8 @@ export function Hero() {
               </Link>
             </Button>
             <Button variant="outline" size="lg" asChild>
-              <Link href="/demo">
-                Watch Demo
+              <Link href="/chat">
+                Try AI Chat
               </Link>
             </Button>
           </div>
