@@ -4,6 +4,7 @@ import { useSession, signOut } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
+import { SubscriptionStatus } from '@/components/subscription-status'
 
 export default function DashboardPage() {
   const { data: session, status } = useSession()
@@ -265,24 +266,38 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Recent Activity */}
-        <div className="bg-white rounded-lg shadow-sm border">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h3 className="text-lg font-medium text-gray-900">Recent Activity</h3>
-          </div>
-          <div className="p-6">
-            <div className="text-center py-8">
-              <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-              </svg>
-              <h3 className="mt-2 text-sm font-medium text-gray-900">No conversations yet</h3>
-              <p className="mt-1 text-sm text-gray-500">
-                Start your first AI conversation to see activity here.
-              </p>
-              <div className="mt-6">
-                <Button onClick={() => router.push('/chat')}>
-                  Start First Chat
-                </Button>
+        {/* Subscription Status and Recent Activity */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Subscription Status */}
+          <SubscriptionStatus
+            user={{
+              id: session.user.id,
+              stripePriceId: null,
+              stripeCurrentPeriodEnd: null,
+              totalTokensUsed: stats.totalTokens,
+              totalChats: stats.totalChats,
+            }}
+          />
+
+          {/* Recent Activity */}
+          <div className="bg-white rounded-lg shadow-sm border">
+            <div className="px-6 py-4 border-b border-gray-200">
+              <h3 className="text-lg font-medium text-gray-900">Recent Activity</h3>
+            </div>
+            <div className="p-6">
+              <div className="text-center py-8">
+                <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+                <h3 className="mt-2 text-sm font-medium text-gray-900">No conversations yet</h3>
+                <p className="mt-1 text-sm text-gray-500">
+                  Start your first AI conversation to see activity here.
+                </p>
+                <div className="mt-6">
+                  <Button onClick={() => router.push('/chat')}>
+                    Start First Chat
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
