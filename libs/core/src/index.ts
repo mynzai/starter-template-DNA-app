@@ -15,7 +15,7 @@ export * from './lib/dna-registry';
 export * from './lib/dna-composer';
 export * from './lib/dna-migration';
 export * from './lib/framework-modules';
-export * from './lib/template-generation-pipeline';
+// export * from './lib/template-generation-pipeline';
 
 // Re-export framework-specific base classes for convenience
 export {
