@@ -1,0 +1,106 @@
+name: ai_mobile_assistant
+description: A comprehensive Flutter-based AI assistant with voice, image recognition, and offline capabilities.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.2.0 <4.0.0'
+  flutter: ">=3.16.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  # AI and HTTP
+  http: ^1.1.0
+  dio: ^5.4.0
+  web_socket_channel: ^2.4.0
+  
+  # State Management
+  provider: ^6.1.1
+  riverpod: ^2.4.9
+  flutter_riverpod: ^2.4.9
+  
+  # Voice Integration
+  speech_to_text: ^6.6.0
+  flutter_tts: ^3.8.3
+  permission_handler: ^11.2.0
+  
+  # Camera and Image Processing
+  camera: ^0.10.5+7
+  image_picker: ^1.0.7
+  image: ^4.1.4
+  
+  # Offline AI and ML
+  tflite_flutter: ^0.10.4
+  tflite_flutter_helper: ^0.3.1
+  
+  # Storage and Database
+  sqflite: ^2.3.0
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  path_provider: ^2.1.2
+  
+  # Push Notifications
+  firebase_core: ^2.24.2
+  firebase_messaging: ^14.7.9
+  flutter_local_notifications: ^16.3.2
+  
+  # UI and Utilities
+  cupertino_icons: ^1.0.6
+  flutter_svg: ^2.0.9
+  cached_network_image: ^3.3.1
+  shimmer: ^3.0.0
+  lottie: ^2.7.0
+  
+  # Platform Integration
+  device_info_plus: ^9.1.2
+  connectivity_plus: ^5.0.2
+  package_info_plus: ^5.0.1
+  
+  # Audio
+  audioplayers: ^5.2.1
+  record: ^5.0.4
+  
+  # JSON and Serialization
+  json_annotation: ^4.8.1
+  
+  # Crypto and Security
+  crypto: ^3.0.3
+  flutter_secure_storage: ^9.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.1
+  
+  # Code Generation
+  build_runner: ^2.4.7
+  json_serializable: ^6.7.1
+  hive_generator: ^2.0.1
+  
+  # Testing
+  mockito: ^5.4.4
+  integration_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+  
+  assets:
+    - assets/images/
+    - assets/icons/
+    - assets/animations/
+    - assets/models/
+    - assets/audio/
+  
+  fonts:
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter-Regular.ttf
+        - asset: assets/fonts/Inter-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Inter-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Inter-Bold.ttf
+          weight: 700
