@@ -25,6 +25,9 @@ export const PLANS = {
     limits: {
       tokens: 1000,
       conversations: 5,
+      ragQueries: 10,
+      documentUploads: 5,
+      maxContext: 3,
       models: ['gpt-3.5-turbo'],
     },
   },
@@ -42,6 +45,9 @@ export const PLANS = {
     limits: {
       tokens: 10000,
       conversations: -1, // unlimited
+      ragQueries: 100,
+      documentUploads: 50,
+      maxContext: 5,
       models: ['gpt-3.5-turbo', 'gpt-4', 'claude-3-haiku'],
     },
   },
@@ -61,6 +67,9 @@ export const PLANS = {
     limits: {
       tokens: 50000,
       conversations: -1,
+      ragQueries: 500,
+      documentUploads: 200,
+      maxContext: 8,
       models: ['gpt-3.5-turbo', 'gpt-4', 'gpt-4-turbo', 'claude-3-sonnet', 'claude-3-opus'],
     },
   },
@@ -82,6 +91,9 @@ export const PLANS = {
     limits: {
       tokens: 200000,
       conversations: -1,
+      ragQueries: -1, // unlimited
+      documentUploads: -1, // unlimited
+      maxContext: 15,
       models: ['gpt-3.5-turbo', 'gpt-4', 'gpt-4-turbo', 'claude-3-sonnet', 'claude-3-opus'],
     },
   },

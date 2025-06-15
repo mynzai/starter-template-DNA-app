@@ -70,6 +70,8 @@ model User {
   // Relations
   chats                 Chat[]
   apiKeys               ApiKey[]
+  documents             Document[]
+  knowledgeBases        KnowledgeBase[]
 }
 
 model VerificationToken {
@@ -144,4 +146,66 @@ enum PlanType {
   STARTER
   PROFESSIONAL
   ENTERPRISE
+}
+
+model Document {
+  id            String   @id @default(cuid())
+  title         String
+  content       String?  // Store original content (optional)
+  source        String   // File path, URL, or source identifier
+  type          String   // 'pdf', 'web', 'text', etc.
+  url           String?  // Original URL if web document
+  size          Int?     // File size in bytes
+  wordCount     Int?     // Number of words
+  language      String?  // Detected language
+  status        String   @default("processing") // 'processing', 'completed', 'failed'
+  errorMessage  String?  // Error details if processing failed
+  tags          String[] // User-defined tags
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  processedAt   DateTime? // When processing completed
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  chunks DocumentChunk[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+  @@index([type])
+}
+
+model DocumentChunk {
+  id           String @id @default(cuid())
+  text         String @db.Text
+  chunkIndex   Int
+  startChar    Int
+  endChar      Int
+  vectorId     String? // ID in vector database
+  embeddingGenerated Boolean @default(false)
+  createdAt    DateTime @default(now())
+
+  documentId String
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@index([documentId])
+  @@index([vectorId])
+  @@index([embeddingGenerated])
+}
+
+model KnowledgeBase {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  isPublic    Boolean  @default(false)
+  settings    Json?    // Configuration settings
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([isPublic])
 }

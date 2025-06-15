@@ -36,6 +36,8 @@ export default function ChatPage() {
   const [selectedProvider, setSelectedProvider] = useState<'openai' | 'anthropic'>('openai')
   const [userPlan, setUserPlan] = useState<string>('FREE')
   const [availableModels, setAvailableModels] = useState<string[]>(['gpt-3.5-turbo'])
+  const [useRAG, setUseRAG] = useState(false)
+  const [ragSources, setRagSources] = useState<any[]>([])
 
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
@@ -117,12 +119,22 @@ export default function ChatPage() {
     setMessages(prev => [...prev, assistantMessage])
 
     try {
-      const response = await fetch('/api/chat/stream', {
+      const endpoint = useRAG ? '/api/rag/query' : '/api/chat/stream'
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
+        body: JSON.stringify(useRAG ? {
+          query: userMessage.content,
+          chatId: currentChat?.id,
+          options: {
+            model: selectedModel,
+            provider: selectedProvider,
+            maxContext: 5,
+            minRelevanceScore: 0.7,
+          },
+        } : {
           message: userMessage.content,
           chatId: currentChat?.id,
           model: selectedModel,
@@ -135,57 +147,74 @@ export default function ChatPage() {
         throw new Error(error.error || 'Failed to send message')
       }
 
-      const reader = response.body?.getReader()
-      const decoder = new TextDecoder()
+      if (useRAG) {
+        // Handle RAG response (non-streaming)
+        const ragResponse = await response.json()
+        
+        setMessages(prev =>
+          prev.map(msg =>
+            msg.id === assistantMessage.id
+              ? { ...msg, content: ragResponse.response }
+              : msg
+          )
+        )
+        
+        setRagSources(ragResponse.sources || [])
+        setIsStreaming(false)
+      } else {
+        // Handle streaming chat response
+        const reader = response.body?.getReader()
+        const decoder = new TextDecoder()
 
-      if (!reader) {
-        throw new Error('No response stream')
-      }
+        if (!reader) {
+          throw new Error('No response stream')
+        }
 
-      let buffer = ''
-      while (true) {
-        const { done, value } = await reader.read()
-        if (done) break
+        let buffer = ''
+        while (true) {
+          const { done, value } = await reader.read()
+          if (done) break
 
-        buffer += decoder.decode(value, { stream: true })
-        const lines = buffer.split('\n')
-        buffer = lines.pop() || ''
+          buffer += decoder.decode(value, { stream: true })
+          const lines = buffer.split('\n')
+          buffer = lines.pop() || ''
 
-        for (const line of lines) {
-          if (line.startsWith('data: ')) {
-            try {
-              const data = JSON.parse(line.slice(6))
-              
-              if (data.error) {
-                throw new Error(data.error)
-              }
-
-              if (data.delta) {
-                setMessages(prev =>
-                  prev.map(msg =>
-                    msg.id === assistantMessage.id
-                      ? { ...msg, content: msg.content + data.delta }
-                      : msg
-                  )
-                )
-              }
-
-              if (data.done) {
-                if (data.chatId && !currentChat) {
-                  setCurrentChat({ 
-                    id: data.chatId, 
-                    title: userMessage.content.slice(0, 50), 
-                    model: selectedModel,
-                    messages: []
-                  })
-                  // Update URL with chat ID
-                  router.replace(`/chat?id=${data.chatId}`)
+          for (const line of lines) {
+            if (line.startsWith('data: ')) {
+              try {
+                const data = JSON.parse(line.slice(6))
+                
+                if (data.error) {
+                  throw new Error(data.error)
                 }
-                setIsStreaming(false)
-                break
+
+                if (data.delta) {
+                  setMessages(prev =>
+                    prev.map(msg =>
+                      msg.id === assistantMessage.id
+                        ? { ...msg, content: msg.content + data.delta }
+                        : msg
+                    )
+                  )
+                }
+
+                if (data.done) {
+                  if (data.chatId && !currentChat) {
+                    setCurrentChat({ 
+                      id: data.chatId, 
+                      title: userMessage.content.slice(0, 50), 
+                      model: selectedModel,
+                      messages: []
+                    })
+                    // Update URL with chat ID
+                    router.replace(`/chat?id=${data.chatId}`)
+                  }
+                  setIsStreaming(false)
+                  break
+                }
+              } catch (parseError) {
+                console.error('Error parsing stream data:', parseError)
               }
-            } catch (parseError) {
-              console.error('Error parsing stream data:', parseError)
             }
           }
         }
@@ -273,6 +302,32 @@ export default function ChatPage() {
               <option value="anthropic">Anthropic</option>
             </select>
 
+            {/* RAG Toggle */}
+            <div className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                id="rag-toggle"
+                checked={useRAG}
+                onChange={(e) => setUseRAG(e.target.checked)}
+                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                disabled={isStreaming}
+              />
+              <label
+                htmlFor="rag-toggle"
+                className="text-sm font-medium text-gray-700 cursor-pointer"
+              >
+                Use Knowledge Base
+              </label>
+            </div>
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => router.push('/knowledge')}
+            >
+              Knowledge Base
+            </Button>
+
             <Button
               variant="outline"
               size="sm"
@@ -359,6 +414,42 @@ export default function ChatPage() {
                       </div>
                     )}
                   </div>
+                  
+                  {/* RAG Sources */}
+                  {message.role === 'assistant' && ragSources.length > 0 && (
+                    <div className="mt-3 pt-3 border-t border-gray-200">
+                      <div className="text-xs font-medium text-gray-600 mb-2">Sources:</div>
+                      <div className="space-y-2">
+                        {ragSources.slice(0, 3).map((source, index) => (
+                          <div key={index} className="text-xs bg-gray-50 rounded p-2">
+                            <div className="font-medium text-gray-800">{source.title}</div>
+                            <div className="text-gray-600 mt-1">{source.excerpt}</div>
+                            <div className="flex justify-between items-center mt-1">
+                              <span className="text-gray-500">
+                                Relevance: {Math.round(source.relevanceScore * 100)}%
+                              </span>
+                              {source.url && (
+                                <a
+                                  href={source.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-blue-600 hover:underline"
+                                >
+                                  View
+                                </a>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                        {ragSources.length > 3 && (
+                          <div className="text-xs text-gray-500">
+                            +{ragSources.length - 3} more sources
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                  
                   <div className="text-xs mt-1 opacity-70">
                     {message.timestamp.toLocaleTimeString()}
                   </div>
