@@ -404,6 +404,22 @@ export class TemplateEngine {
       async list(path: string): Promise<string[]> {
         // Implementation would list directory contents
         return [];
+      },
+      async access(path: string, mode?: number): Promise<void> {
+        // Implementation would check file access
+      },
+      async pathExists(path: string): Promise<boolean> {
+        // Implementation would check if path exists
+        return false;
+      },
+      async writeJSON(path: string, data: any, options?: { spaces?: number }): Promise<void> {
+        // Implementation would write JSON file
+      },
+      constants: {
+        R_OK: 4,
+        W_OK: 2,
+        X_OK: 1,
+        F_OK: 0
       }
     };
   }

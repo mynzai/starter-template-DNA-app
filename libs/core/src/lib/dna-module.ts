@@ -26,6 +26,7 @@ import {
  * Abstract base class for all DNA modules
  */
 export abstract class BaseDNAModule implements DNAModule {
+  public abstract readonly id: string;
   public abstract readonly metadata: DNAModuleMetadata;
   public abstract readonly dependencies: DNAModuleDependency[];
   public abstract readonly conflicts: DNAModuleConflict[];
@@ -102,7 +103,7 @@ export abstract class BaseDNAModule implements DNAModule {
           severity: conflict.severity as 'error' | 'critical'
         };
         if (conflict.resolution) {
-          error.resolution = conflict.resolution;
+          (error as any).resolution = conflict.resolution;
         }
         if (conflict.severity === 'error') {
           errors.push(error);

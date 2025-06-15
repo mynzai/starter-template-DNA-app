@@ -34,7 +34,7 @@ export class TemplateInstantiationEngine {
    * Register a DNA module with the template engine
    */
   public registerModule(module: DNAModule): void {
-    this.modules.set(module.id, module);
+    this.modules.set(module.metadata.id, module);
   }
 
   /**
@@ -170,7 +170,7 @@ export class TemplateInstantiationEngine {
     // Validate DNA modules compatibility
     const incompatibleModules = config.dnaModules.filter(moduleId => {
       const module = this.modules.get(moduleId);
-      return module && !module.framework.includes(config.framework);
+      return module && !module.frameworks.some(f => f.framework === config.framework);
     });
 
     if (incompatibleModules.length > 0) {
@@ -327,7 +327,7 @@ export class TemplateInstantiationEngine {
       framework: config.framework,
       type: config.type,
       modules: resolvedModules.reduce((acc, module) => {
-        acc[module.id] = {
+        acc[module.metadata.id] = {
           enabled: true,
           config: module,
         };

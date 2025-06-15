@@ -89,7 +89,13 @@ export class TemplateGenerationPipeline extends EventEmitter {
       enableProgressiveValidation: options.enableProgressiveValidation ?? true,
       maxRetries: options.maxRetries ?? 3,
       timeout: options.timeout ?? 600000, // 10 minutes
-      logger: options.logger || console,
+      logger: options.logger || {
+        debug: (message: string, meta?: any) => console.debug(message, meta),
+        info: (message: string, meta?: any) => console.info(message, meta),
+        warn: (message: string, meta?: any) => console.warn(message, meta),
+        error: (message: string, meta?: any) => console.error(message, meta),
+        success: (message: string, meta?: any) => console.log('✓', message, meta)
+      },
       fileSystem: options.fileSystem || require('fs-extra')
     };
 
@@ -397,6 +403,7 @@ export class TemplateGenerationPipeline extends EventEmitter {
       })),
       framework: request.framework,
       templateType: request.templateType,
+      globalConfig: {},
       projectName: request.name
     };
     
