@@ -1,0 +1,269 @@
+name: Build and Release
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  release:
+    types: [ published ]
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: 1
+
+jobs:
+  test:
+    name: Test Suite
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run frontend tests
+        run: npm test
+      
+      - name: Run frontend linting
+        run: npm run lint
+      
+      - name: Run TypeScript check
+        run: npm run type-check
+      
+      - name: Run Rust tests
+        run: cd src-tauri && cargo test
+      
+      - name: Run Rust linting
+        run: cd src-tauri && cargo clippy -- -D warnings
+      
+      - name: Check Rust formatting
+        run: cd src-tauri && cargo fmt --check
+
+  build:
+    name: Build (${{ matrix.platform }})
+    runs-on: ${{ matrix.os }}
+    needs: test
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Windows builds
+          - platform: 'windows-x86_64'
+            os: 'windows-latest'
+            rust_target: 'x86_64-pc-windows-msvc'
+            
+          # macOS builds
+          - platform: 'macos-x86_64'
+            os: 'macos-latest'
+            rust_target: 'x86_64-apple-darwin'
+            
+          - platform: 'macos-aarch64'
+            os: 'macos-latest'
+            rust_target: 'aarch64-apple-darwin'
+            
+          # Linux builds
+          - platform: 'linux-x86_64'
+            os: 'ubuntu-20.04'
+            rust_target: 'x86_64-unknown-linux-gnu'
+
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.rust_target }}
+      
+      - name: Install Linux dependencies
+        if: matrix.platform == 'linux-x86_64'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libwebkit2gtk-4.0-dev \
+            libssl-dev \
+            libgtk-3-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev \
+            patchelf
+      
+      - name: Install frontend dependencies
+        run: npm ci
+      
+      - name: Build frontend
+        run: npm run build
+      
+      - name: Install Rust dependencies
+        run: cd src-tauri && cargo fetch
+      
+      - name: Build Tauri app
+        env:
+          RUST_TARGET: ${{ matrix.rust_target }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ENABLE_CODE_SIGNING: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
+          TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
+        run: |
+          if [ "${{ matrix.platform }}" == "macos-aarch64" ]; then
+            npm run tauri build -- --target aarch64-apple-darwin
+          elif [ "${{ matrix.platform }}" == "macos-x86_64" ]; then
+            npm run tauri build -- --target x86_64-apple-darwin
+          elif [ "${{ matrix.platform }}" == "windows-x86_64" ]; then
+            npm run tauri build -- --target x86_64-pc-windows-msvc
+          else
+            npm run tauri build -- --target x86_64-unknown-linux-gnu
+          fi
+        shell: bash
+      
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ matrix.platform }}
+          path: |
+            src-tauri/target/${{ matrix.rust_target }}/release/bundle/
+            !src-tauri/target/${{ matrix.rust_target }}/release/bundle/**/.*
+          retention-days: 30
+
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'release'
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+      
+      - name: Display structure of downloaded files
+        run: ls -la artifacts/
+      
+      - name: Create release assets
+        run: |
+          mkdir -p release-assets
+          
+          # Windows
+          if [ -d "artifacts/build-windows-x86_64" ]; then
+            find artifacts/build-windows-x86_64 -name "*.msi" -exec cp {} release-assets/tauri-native-platform-windows-x86_64.msi \;
+            find artifacts/build-windows-x86_64 -name "*.exe" -exec cp {} release-assets/tauri-native-platform-windows-x86_64.exe \;
+          fi
+          
+          # macOS x86_64
+          if [ -d "artifacts/build-macos-x86_64" ]; then
+            find artifacts/build-macos-x86_64 -name "*.dmg" -exec cp {} release-assets/tauri-native-platform-macos-x86_64.dmg \;
+            find artifacts/build-macos-x86_64 -name "*.app.tar.gz" -exec cp {} release-assets/tauri-native-platform-macos-x86_64.app.tar.gz \;
+          fi
+          
+          # macOS aarch64
+          if [ -d "artifacts/build-macos-aarch64" ]; then
+            find artifacts/build-macos-aarch64 -name "*.dmg" -exec cp {} release-assets/tauri-native-platform-macos-aarch64.dmg \;
+            find artifacts/build-macos-aarch64 -name "*.app.tar.gz" -exec cp {} release-assets/tauri-native-platform-macos-aarch64.app.tar.gz \;
+          fi
+          
+          # Linux
+          if [ -d "artifacts/build-linux-x86_64" ]; then
+            find artifacts/build-linux-x86_64 -name "*.deb" -exec cp {} release-assets/tauri-native-platform-linux-x86_64.deb \;
+            find artifacts/build-linux-x86_64 -name "*.AppImage" -exec cp {} release-assets/tauri-native-platform-linux-x86_64.AppImage \;
+            find artifacts/build-linux-x86_64 -name "*.tar.gz" -exec cp {} release-assets/tauri-native-platform-linux-x86_64.tar.gz \;
+          fi
+          
+          ls -la release-assets/
+      
+      - name: Upload release assets
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload ${{ github.event.release.tag_name }} release-assets/* --clobber
+
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+      
+      - name: Install cargo-audit
+        run: cargo install cargo-audit
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run npm audit
+        run: npm audit --audit-level=moderate
+      
+      - name: Run cargo audit
+        run: cd src-tauri && cargo audit
+      
+      - name: Run security linting
+        run: |
+          # Check for common security issues in code
+          grep -r "eval(" src/ || true
+          grep -r "innerHTML" src/ || true
+          grep -r "dangerouslySetInnerHTML" src/ || true
+
+  performance-test:
+    name: Performance Test
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run bundle analysis
+        run: |
+          npm run build
+          npx vite-bundle-analyzer dist --open-analyzer false
+      
+      - name: Check bundle size
+        run: |
+          # Get bundle size and fail if too large
+          BUNDLE_SIZE=$(du -sk dist | cut -f1)
+          echo "Bundle size: ${BUNDLE_SIZE}KB"
+          if [ $BUNDLE_SIZE -gt 2048 ]; then
+            echo "Bundle size exceeds 2MB limit"
+            exit 1
+          fi
