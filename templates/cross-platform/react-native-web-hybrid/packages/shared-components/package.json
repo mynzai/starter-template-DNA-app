@@ -1,0 +1,59 @@
+{
+  "name": "@hybrid/shared-components",
+  "version": "1.0.0",
+  "description": "Shared component library for React Native and Next.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "jest",
+    "lint": "eslint src --ext .ts,.tsx",
+    "type-check": "tsc --noEmit",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-native": "^0.72.7",
+    "react-native-web": "^0.19.9",
+    "styled-components": "^6.1.1",
+    "@reduxjs/toolkit": "^2.0.1",
+    "react-redux": "^9.0.4",
+    "react-hook-form": "^7.48.2",
+    "@hookform/resolvers": "^3.3.2",
+    "zod": "^3.22.4",
+    "date-fns": "^2.30.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.42",
+    "@types/react-native": "^0.72.7",
+    "@types/styled-components": "^5.1.34",
+    "@types/styled-components-react-native": "^5.2.5",
+    "@storybook/react": "^7.6.5",
+    "@storybook/react-vite": "^7.6.5",
+    "@storybook/addon-essentials": "^7.6.5",
+    "@storybook/addon-docs": "^7.6.5",
+    "@storybook/addon-controls": "^7.6.5",
+    "@storybook/addon-viewport": "^7.6.5",
+    "storybook": "^7.6.5",
+    "typescript": "^5.3.2"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-native": ">=0.72.0"
+  },
+  "keywords": [
+    "react",
+    "react-native",
+    "nextjs",
+    "components",
+    "shared",
+    "cross-platform",
+    "design-system"
+  ]
+}

@@ -1,0 +1,121 @@
+{
+  "name": "react-native-web-hybrid-workspace",
+  "version": "1.0.0",
+  "description": "React Native + Next.js hybrid platform with 70%+ shared code",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "nx run-many -t build",
+    "test": "nx run-many -t test",
+    "lint": "nx run-many -t lint",
+    "type-check": "nx run-many -t type-check",
+    "dev": "nx run-many -t dev --parallel",
+    
+    "dev:web": "nx dev web",
+    "dev:mobile": "nx dev mobile",
+    "dev:shared": "nx dev shared-components",
+    
+    "build:web": "nx build web",
+    "build:mobile": "nx build mobile",
+    "build:shared": "nx build shared-components",
+    
+    "test:web": "nx test web",
+    "test:mobile": "nx test mobile",
+    "test:shared": "nx test shared-components",
+    "test:e2e": "nx e2e web-e2e && nx e2e mobile-e2e",
+    
+    "lint:web": "nx lint web",
+    "lint:mobile": "nx lint mobile",
+    "lint:shared": "nx lint shared-components",
+    
+    "deploy:web": "nx deploy web",
+    "deploy:mobile": "nx deploy mobile",
+    
+    "postinstall": "husky install && pod-install ios",
+    "clean": "nx reset && rm -rf node_modules apps/*/node_modules packages/*/node_modules",
+    "reset": "npm run clean && npm install",
+    
+    "pod-install": "cd apps/mobile/ios && pod install",
+    "android": "cd apps/mobile && npx react-native run-android",
+    "ios": "cd apps/mobile && npx react-native run-ios",
+    
+    "storybook": "nx storybook shared-components",
+    "build-storybook": "nx build-storybook shared-components"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.23.6",
+    "@babel/preset-env": "^7.23.6",
+    "@babel/runtime": "^7.23.6",
+    "@commitlint/cli": "^18.4.3",
+    "@commitlint/config-conventional": "^18.4.3",
+    "@nx/eslint-plugin": "17.2.7",
+    "@nx/jest": "17.2.7",
+    "@nx/js": "17.2.7",
+    "@nx/next": "17.2.7",
+    "@nx/react": "17.2.7",
+    "@nx/react-native": "17.2.7",
+    "@nx/webpack": "17.2.7",
+    "@nx/workspace": "17.2.7",
+    "@types/jest": "^29.5.8",
+    "@types/node": "^20.10.0",
+    "@types/react": "^18.2.42",
+    "@types/react-dom": "^18.2.17",
+    "@types/react-native": "^0.72.7",
+    "@typescript-eslint/eslint-plugin": "^6.13.1",
+    "@typescript-eslint/parser": "^6.13.1",
+    "eslint": "^8.55.0",
+    "eslint-config-next": "^14.0.3",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-import": "^2.29.0",
+    "eslint-plugin-jsx-a11y": "^6.8.0",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-native": "^4.1.0",
+    "husky": "^8.0.3",
+    "jest": "^29.7.0",
+    "lint-staged": "^15.2.0",
+    "nx": "17.2.7",
+    "pod-install": "^0.2.0",
+    "prettier": "^3.1.0",
+    "typescript": "^5.3.2"
+  },
+  "dependencies": {
+    "tslib": "^2.6.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dna-templates/react-native-web-hybrid.git"
+  },
+  "keywords": [
+    "react-native",
+    "nextjs",
+    "hybrid",
+    "cross-platform",
+    "monorepo",
+    "nx",
+    "shared-code",
+    "redux-toolkit",
+    "typescript"
+  ],
+  "author": "DNA Template Team",
+  "license": "MIT",
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ]
+  },
+  "commitlint": {
+    "extends": ["@commitlint/config-conventional"]
+  }
+}
