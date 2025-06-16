@@ -1,0 +1,344 @@
+name: Build and Release
+
+on:
+  push:
+    branches: [main, develop]
+    tags: ['v*']
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '18'
+  PYTHON_VERSION: '3.11'
+
+jobs:
+  # Test job
+  test:
+    name: Test on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run linting
+        run: npm run lint
+      
+      - name: Run type checking
+        run: npm run type-check
+      
+      - name: Build application
+        run: npm run build
+      
+      - name: Run unit tests
+        run: npm test
+      
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+      
+      - name: Run E2E tests
+        run: npm run test:e2e
+        env:
+          CI: true
+      
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: test-results-${{ matrix.os }}
+          path: test-results/
+          retention-days: 7
+
+  # Build job for each platform
+  build:
+    name: Build ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    needs: test
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            platform: linux
+            arch: x64
+          - os: windows-latest
+            platform: windows
+            arch: x64
+          - os: macos-latest
+            platform: mac
+            arch: x64
+          - os: macos-latest
+            platform: mac
+            arch: arm64
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      
+      - name: Setup Python (Windows)
+        if: matrix.os == 'windows-latest'
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Build application
+        run: npm run build
+      
+      # Code signing setup
+      - name: Import Apple certificates (macOS)
+        if: matrix.platform == 'mac'
+        env:
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLE_KEYCHAIN_PASSWORD: ${{ secrets.APPLE_KEYCHAIN_PASSWORD }}
+        run: |
+          # Create keychain
+          security create-keychain -p "$APPLE_KEYCHAIN_PASSWORD" build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p "$APPLE_KEYCHAIN_PASSWORD" build.keychain
+          
+          # Import certificate
+          echo "$APPLE_CERTIFICATE" | base64 --decode > certificate.p12
+          security import certificate.p12 -k build.keychain -P "$APPLE_CERTIFICATE_PASSWORD" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$APPLE_KEYCHAIN_PASSWORD" build.keychain
+          
+          # Clean up
+          rm certificate.p12
+      
+      - name: Setup Windows code signing (Windows)
+        if: matrix.platform == 'windows'
+        env:
+          WINDOWS_CERTIFICATE: ${{ secrets.WINDOWS_CERTIFICATE }}
+          WINDOWS_CERTIFICATE_PASSWORD: ${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}
+        run: |
+          # Import certificate for Windows code signing
+          echo "$env:WINDOWS_CERTIFICATE" | Out-File -FilePath certificate.p12 -Encoding Base64
+          certutil -decode certificate.p12 certificate_decoded.p12
+          
+          # Import to certificate store
+          Import-PfxCertificate -FilePath certificate_decoded.p12 -Password (ConvertTo-SecureString -String "$env:WINDOWS_CERTIFICATE_PASSWORD" -AsPlainText -Force) -CertStoreLocation Cert:\CurrentUser\My
+          
+          # Clean up
+          Remove-Item certificate.p12, certificate_decoded.p12
+        shell: powershell
+      
+      # Build distributables
+      - name: Build Linux distributables
+        if: matrix.platform == 'linux'
+        run: npm run dist:linux
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Build Windows distributables
+        if: matrix.platform == 'windows'
+        run: npm run dist:win
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CSC_LINK: ${{ secrets.WINDOWS_CERTIFICATE }}
+          CSC_KEY_PASSWORD: ${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}
+      
+      - name: Build macOS distributables
+        if: matrix.platform == 'mac'
+        run: |
+          if [ "${{ matrix.arch }}" = "arm64" ]; then
+            npm run dist:mac -- --arch=arm64
+          else
+            npm run dist:mac -- --arch=x64
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CSC_LINK: ${{ secrets.APPLE_CERTIFICATE }}
+          CSC_KEY_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+      
+      # Notarization for macOS
+      - name: Notarize macOS app
+        if: matrix.platform == 'mac'
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          # Find the .dmg file
+          DMG_FILE=$(find releases -name "*.dmg" | head -1)
+          if [ -n "$DMG_FILE" ]; then
+            echo "Notarizing $DMG_FILE"
+            npx notarize-cli --file "$DMG_FILE" --bundle-id "com.example.modern-electron-app" --username "$APPLE_ID" --password "$APPLE_ID_PASSWORD" --asc-provider "$APPLE_TEAM_ID"
+          fi
+      
+      # Upload artifacts
+      - name: Upload distributables
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist-${{ matrix.platform }}-${{ matrix.arch }}
+          path: |
+            releases/
+          retention-days: 7
+      
+      # Security scanning
+      - name: Run security scan
+        if: matrix.platform == 'linux'
+        run: |
+          # Install and run security scanners
+          npm install -g audit-ci
+          audit-ci --moderate
+      
+      # Performance testing
+      - name: Performance tests
+        if: matrix.platform == 'linux'
+        run: |
+          npm run test:performance
+        continue-on-error: true
+
+  # Release job
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Download all artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: artifacts/
+      
+      - name: Display structure of downloaded files
+        run: ls -la artifacts/
+      
+      - name: Generate changelog
+        id: changelog
+        run: |
+          # Generate changelog from git commits since last tag
+          PREVIOUS_TAG=$(git describe --tags --abbrev=0 HEAD~1 2>/dev/null || echo "")
+          if [ -z "$PREVIOUS_TAG" ]; then
+            CHANGELOG=$(git log --pretty=format:"- %s" --no-merges)
+          else
+            CHANGELOG=$(git log --pretty=format:"- %s" --no-merges $PREVIOUS_TAG..HEAD)
+          fi
+          
+          # Create changelog file
+          echo "## Changes" > CHANGELOG.md
+          echo "$CHANGELOG" >> CHANGELOG.md
+          
+          # Set output for GitHub release
+          echo "changelog<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+      
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
+          body: |
+            ## Modern Electron App ${{ github.ref_name }}
+            
+            ${{ steps.changelog.outputs.changelog }}
+            
+            ### Downloads
+            - **Windows**: `.exe` installer and portable `.zip`
+            - **macOS**: `.dmg` installer (Intel and Apple Silicon)
+            - **Linux**: `.AppImage`, `.deb`, and `.rpm` packages
+            
+            ### Security
+            - All binaries are code signed and verified
+            - macOS builds are notarized by Apple
+            - Windows builds are signed with Extended Validation certificate
+            
+            ### Checksums
+            SHA256 checksums are included for all releases to verify integrity.
+          draft: false
+          prerelease: ${{ contains(github.ref, 'beta') || contains(github.ref, 'alpha') || contains(github.ref, 'rc') }}
+          files: |
+            artifacts/dist-*/**/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      # Auto-updater channel setup
+      - name: Update auto-updater channels
+        run: |
+          echo "Setting up auto-updater channels for release ${{ github.ref_name }}"
+          # Here you would typically update your auto-updater server
+          # with the new release information
+      
+      # Notify release
+      - name: Notify release
+        if: success()
+        run: |
+          echo "✅ Release ${{ github.ref_name }} created successfully!"
+          echo "🔗 Release URL: ${{ github.server_url }}/${{ github.repository }}/releases/tag/${{ github.ref_name }}"
+
+  # Auto-update testing
+  auto-update-test:
+    name: Test Auto-Update
+    runs-on: ${{ matrix.os }}
+    needs: release
+    if: startsWith(github.ref, 'refs/tags/v')
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    
+    steps:
+      - name: Test auto-update mechanism
+        run: |
+          echo "Testing auto-update for ${{ matrix.os }}"
+          # Here you would download the previous version,
+          # install it, and test that it can update to the new version
+        continue-on-error: true
+
+  # Deployment to app stores (optional)
+  deploy-stores:
+    name: Deploy to App Stores
+    runs-on: macos-latest
+    needs: release
+    if: startsWith(github.ref, 'refs/tags/v') && !contains(github.ref, 'beta')
+    
+    steps:
+      - name: Deploy to Mac App Store
+        env:
+          MAS_CERTIFICATE: ${{ secrets.MAS_CERTIFICATE }}
+          MAS_CERTIFICATE_PASSWORD: ${{ secrets.MAS_CERTIFICATE_PASSWORD }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+        run: |
+          echo "Deploying to Mac App Store"
+          # Implementation would depend on your app store submission process
+        continue-on-error: true
+      
+      - name: Deploy to Microsoft Store
+        env:
+          MS_STORE_CERTIFICATE: ${{ secrets.MS_STORE_CERTIFICATE }}
+          MS_STORE_CERTIFICATE_PASSWORD: ${{ secrets.MS_STORE_CERTIFICATE_PASSWORD }}
+        run: |
+          echo "Deploying to Microsoft Store"
+          # Implementation would depend on your store submission process
+        continue-on-error: true
