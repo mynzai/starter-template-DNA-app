@@ -390,15 +390,16 @@ export interface DNARegistryConfig {
   readonly sources: {
     readonly type: 'local' | 'remote' | 'npm';
     readonly path: string;
-    readonly priority: number;
+    readonly priority?: number;
   }[];
-  readonly cache: {
+  readonly cache?: {
     readonly enabled: boolean;
     readonly ttl: number;
-    readonly path: string;
+    readonly maxSize?: number;
+    readonly path?: string;
   };
   readonly validation: {
-    readonly strict: boolean;
+    readonly strict?: boolean;
     readonly allowExperimental: boolean;
     readonly allowDeprecated: boolean;
   };

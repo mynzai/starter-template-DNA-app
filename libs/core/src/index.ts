@@ -17,6 +17,12 @@ export * from './lib/dna-migration';
 export * from './lib/framework-modules';
 // export * from './lib/template-generation-pipeline';
 
+// Epic 5 Story 1: DNA Engine Foundation
+export * from './lib/dna-engine';
+export * from './lib/dependency-resolver';
+export * from './lib/hot-reload-system';
+export * from './lib/module-lifecycle-manager';
+
 // Re-export framework-specific base classes for convenience
 export {
   FlutterDNAModule,
