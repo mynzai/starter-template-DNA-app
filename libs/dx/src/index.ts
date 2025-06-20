@@ -450,4 +450,93 @@ interface DXPerformanceMetrics {
   cpuUsage: number;
 }
 
+// Interactive Documentation System (Epic 6 Story 2 AC1)
+export {
+  InteractiveDocumentationSystem,
+  createInteractiveDocumentationSystem,
+  defaultInteractiveDocsConfig
+} from './lib/interactive-docs';
+
+export type {
+  InteractiveDocsConfig,
+  DocsTheme,
+  DocsFeatures,
+  PlaygroundConfig,
+  TutorialConfig,
+  ExampleConfig,
+  Video,
+  Tutorial,
+  Example,
+  PlaygroundSession,
+  TutorialProgress
+} from './lib/interactive-docs';
+
+// Video Walkthrough System (Epic 6 Story 2 AC2)
+export {
+  VideoWalkthroughSystem
+} from './lib/video-walkthroughs';
+
+export type {
+  VideoWalkthroughConfig,
+  Video as VideoWalkthrough,
+  Chapter,
+  Annotation,
+  ViewingSession,
+  VideoCategory,
+  VideoMetadata
+} from './lib/video-walkthroughs';
+
+// Architecture Decision Records (Epic 6 Story 2 AC3)
+export {
+  ADRSystem
+} from './lib/architecture-decisions';
+
+export type {
+  ADRConfig,
+  ADR,
+  ADRStatus,
+  ADRContext,
+  ADRDecision,
+  ADRConsequences,
+  BreakingChange,
+  Migration as ADRMigration,
+  Amendment,
+  ADRTemplate
+} from './lib/architecture-decisions';
+
+// Migration Guide System (Epic 6 Story 2 AC4)
+export {
+  MigrationGuideSystem
+} from './lib/migration-guides';
+
+export type {
+  MigrationGuideConfig,
+  Migration,
+  MigrationPlan,
+  MigrationSession,
+  MigrationStep,
+  BreakingChange as MigrationBreakingChange,
+  MigrationStatus,
+  ImpactAnalysis,
+  CompatibilityReport
+} from './lib/migration-guides';
+
+// Knowledge Base System (Epic 6 Story 2 AC5)
+export {
+  KnowledgeBaseSystem
+} from './lib/knowledge-base';
+
+export type {
+  KnowledgeBaseConfig,
+  KBArticle,
+  Question,
+  Answer,
+  SearchResults,
+  SearchOptions,
+  TrendingContent,
+  ContentSuggestion,
+  QAConfig,
+  CommunityConfig
+} from './lib/knowledge-base';
+
 export default DXFactory;
