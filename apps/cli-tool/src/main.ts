@@ -15,6 +15,7 @@ import { updateCommand } from './commands/update';
 import { testCommand } from './commands/test';
 import { trackCommand } from './commands/track';
 import { gitCommand } from './commands/git';
+import { qualityValidationCommand } from './commands/quality-validation';
 import { environment } from './environments/environment';
 import { logger } from './utils/logger';
 import { handleError } from './utils/error-handler';
@@ -69,6 +70,7 @@ async function main(): Promise<void> {
     program.addCommand(testCommand);
     program.addCommand(trackCommand);
     program.addCommand(gitCommand);
+    program.addCommand(qualityValidationCommand);
 
     // Show help when no command is provided
     if (process.argv.length <= 2) {
@@ -97,6 +99,7 @@ ${chalk.bold('Quick Start:')}
   ${chalk.cyan('dna-cli create')}          ${chalk.gray('# Interactive template creation')}
   ${chalk.cyan('dna-cli list')}            ${chalk.gray('# Browse available templates')}
   ${chalk.cyan('dna-cli test')}            ${chalk.gray('# Run comprehensive tests')}
+  ${chalk.cyan('dna-cli quality')}         ${chalk.gray('# Automated quality validation')}
   ${chalk.cyan('dna-cli create --help')}   ${chalk.gray('# Get detailed help')}
 
 ${chalk.bold('Examples:')}

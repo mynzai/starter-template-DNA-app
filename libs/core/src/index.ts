@@ -23,6 +23,10 @@ export * from './lib/dependency-resolver';
 export * from './lib/hot-reload-system';
 export * from './lib/module-lifecycle-manager';
 
+// Epic 6 Story 4: Automated Quality Validation
+export * from './lib/quality-validation/quality-validation-engine';
+export * from './lib/quality-validation/automated-quality-orchestrator';
+
 // Re-export framework-specific base classes for convenience
 export {
   FlutterDNAModule,
