@@ -27,6 +27,12 @@ export * from './lib/module-lifecycle-manager';
 export * from './lib/quality-validation/quality-validation-engine';
 export * from './lib/quality-validation/automated-quality-orchestrator';
 
+// Epic 2 Story 1: AI Integration Framework
+export * from './lib/ai';
+
+// Epic 2 Story 4: AI Development Tools
+export * from './lib/ai-dev-tools';
+
 // Re-export framework-specific base classes for convenience
 export {
   FlutterDNAModule,
@@ -35,9 +41,6 @@ export {
   TauriDNAModule,
   SvelteKitDNAModule
 } from './lib/framework-modules';
-
-// AI Development Tools
-export * from './lib/ai-dev-tools';
 
 // Version information
 export const VERSION = '1.0.0';
