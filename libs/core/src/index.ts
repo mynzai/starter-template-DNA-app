@@ -27,6 +27,9 @@ export * from './lib/module-lifecycle-manager';
 export * from './lib/quality-validation/quality-validation-engine';
 export * from './lib/quality-validation/automated-quality-orchestrator';
 
+// Epic 6 Story 7: Template Evolution & Analytics
+export * from './lib/analytics';
+
 // Re-export framework-specific base classes for convenience
 export {
   FlutterDNAModule,
