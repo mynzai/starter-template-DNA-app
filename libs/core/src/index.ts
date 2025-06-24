@@ -33,6 +33,9 @@ export * from './lib/ai';
 // Epic 2 Story 4: AI Development Tools
 export * from './lib/ai-dev-tools';
 
+// Epic 6 Story 7: Template Evolution & Analytics
+export * from './lib/analytics';
+
 // Re-export framework-specific base classes for convenience
 export {
   FlutterDNAModule,
