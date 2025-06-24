@@ -36,6 +36,16 @@ export * from './lib/ai-dev-tools';
 // Epic 6 Story 7: Template Evolution & Analytics
 export * from './lib/analytics';
 
+// Epic 1 Story 3a: DNA Module Interface Foundation
+export * from './lib/dna-interfaces';
+export * from './lib/adapters';
+
+// Epic 1 Story 3b: DNA Composition Engine Implementation
+export * from './lib/enhanced-dna-composer';
+
+// Epic 1 Story 4: Enhanced Quality Validation Engine
+export * from './lib/quality-validation/enhanced-quality-engine';
+
 // Re-export framework-specific base classes for convenience
 export {
   FlutterDNAModule,
