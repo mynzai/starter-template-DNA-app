@@ -26,6 +26,9 @@ export {
   SvelteKitDNAModule
 } from './lib/framework-modules';
 
+// AI Development Tools
+export * from './lib/ai-dev-tools';
+
 // Version information
 export const VERSION = '1.0.0';
 export const CORE_NAME = 'DNA Template Engine Core';

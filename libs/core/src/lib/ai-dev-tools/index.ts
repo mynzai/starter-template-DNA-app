@@ -5,11 +5,80 @@
 
 // Core Services
 export { CodeGenerationService } from './code-generation/code-generation-service';
-export { GitIntegrationService } from './git-integration/git-integration-service';
-export { TestGenerationService } from './test-generation/test-generation-service';
-export { DocumentationAIService } from './documentation/documentation-ai-service';
-export { DevToolsPerformanceMonitor } from './monitoring/dev-tools-performance-monitor';
-export { TeamCollaborationService } from './collaboration/team-collaboration-service';
+
+// Git Integration Platform (AC2)
+export { 
+  GitPlatformService,
+  CodeReviewService,
+  WebhookManager,
+  PlatformConnector,
+  createGitPlatformService,
+  createGitHubConfig,
+  createGitLabConfig,
+  createBitbucketConfig,
+  createAzureDevOpsConfig
+} from './git-integration';
+
+// Test Generation Platform (AC3)
+export {
+  TestGenerationService,
+  TestFrameworkManager,
+  TestPatternEngine,
+  CoverageAnalyzer,
+  TestValidator,
+  TestOptimizer,
+  createTestGenerationService,
+  createJavaScriptTestConfig,
+  createTypeScriptTestConfig,
+  createPythonTestConfig,
+  createJavaTestConfig,
+  createCSharpTestConfig,
+  createGoTestConfig,
+  createRustTestConfig,
+  detectLanguageFromFile,
+  getDefaultFrameworkForLanguage,
+  getSupportedFrameworksForLanguage
+} from './test-generation';
+// Documentation Generation Platform (AC4)
+export {
+  DocumentationAIService,
+  CodeAnalyzer,
+  DocumentationTemplateEngine,
+  DocumentationValidator,
+  ContentOptimizer,
+  AssetGenerator,
+  createDocumentationService,
+  createMarkdownConfig,
+  createAPIDocumentationConfig,
+  detectDocumentationType,
+  getRecommendedSectionsForType,
+  isValidLanguageForDocumentation,
+  getLanguageFromFileExtension,
+  validateDocumentationRequest,
+  DOCUMENTATION_EVENTS,
+  DEFAULT_DOCUMENTATION_CONFIG,
+  QUALITY_THRESHOLDS,
+  LIBRARY_DOCUMENTATION_PRESET,
+  API_DOCUMENTATION_PRESET,
+  TUTORIAL_DOCUMENTATION_PRESET
+} from './documentation';
+// Performance Monitoring Platform (AC5)
+export {
+  DevToolsPerformanceMonitor,
+  MetricsCollector,
+  CostTracker,
+  PerformanceAnalyzer,
+  AlertManager,
+  OptimizationEngine
+} from './monitoring';
+
+// Team Collaboration Platform (AC6)
+export {
+  CollaborationService,
+  RBACManager,
+  RealtimeManager,
+  PermissionDeniedError
+} from './collaboration';
 
 // Code Generation Types
 export type {
@@ -20,45 +89,240 @@ export type {
   FrameworkDetectionResult
 } from './code-generation/types';
 
-// Git Integration Types
+// Git Integration Types (AC2)
 export type {
   GitWebhookEvent,
   CodeReviewRequest,
+  CodeReviewOptions,
   CodeAnalysisResult,
-  PlatformConfig
-} from './git-integration/types';
+  FileAnalysisResult,
+  ReviewSuggestion,
+  SecurityIssue,
+  PerformanceIssue,
+  TestCoverageReport,
+  ReviewMetrics,
+  PlatformConfig,
+  GitRepository,
+  GitUser,
+  ChangedFile,
+  MergeRequest,
+  PullRequestComment,
+  CommitStatus,
+  BranchProtection,
+  GitIntegrationMetrics,
+  AutoFixSuggestion,
+  GitPlatformServiceConfig,
+  CodeReviewConfig,
+  WebhookConfig
+} from './git-integration';
 
-// Test Generation Types
+// Test Generation Types (AC3)
 export type {
   TestGenerationRequest,
   TestGenerationResponse,
+  TestGenerationOptions,
+  TestGenerationConfig,
+  TestGenerationMetrics,
+  SupportedTestLanguage,
+  TestFramework,
+  TestType,
   TestFrameworkConfig,
-  CoverageAnalysisResult
-} from './test-generation/types';
+  FrameworkDetectionResult,
+  TestSuite,
+  GeneratedTest,
+  TestAssertion,
+  TestMock,
+  TestData,
+  TestPattern,
+  TestPatternVariable,
+  TestPatternCategory,
+  CoverageAnalysisResult,
+  FileCoverageResult,
+  CoverageGap,
+  UncoveredLine,
+  CoverageThreshold,
+  TestValidationResult,
+  ValidationError,
+  ValidationWarning,
+  TestOptimizationResult,
+  OptimizationSuggestion,
+  TestSuggestion,
+  TestExecutionResult,
+  TestAnalyticsData,
+  TestPerformanceMetrics,
+  TestQualityMetrics,
+  TestGenerationPreset
+} from './test-generation';
 
-// Documentation Types
+// Documentation Types (AC4)
 export type {
   DocumentationRequest,
   DocumentationResponse,
+  DocumentationOptions,
+  DocumentationConfig,
+  SupportedDocLanguage,
+  DocumentationFormat,
+  DocumentationType,
+  DocumentationSection,
+  DocumentationAsset,
+  DocumentationMetadata,
+  DocumentationSuggestion,
+  DocumentationMetrics,
+  DocumentationValidationResult,
   APIDocumentationConfig,
-  MarkdownOutputOptions
-} from './documentation/types';
+  MarkdownOutputOptions,
+  NavigationConfig,
+  SidebarConfig,
+  HeaderConfig,
+  FooterConfig,
+  NavigationItem,
+  SectionType,
+  SectionMetadata,
+  AssetType,
+  AssetMetadata,
+  DocumentationComplexity,
+  ComplexityFactor,
+  DocumentationQuality,
+  QualityFactor,
+  QualityIssue,
+  MaintenanceEffort,
+  CustomSection,
+  SectionVariable,
+  APIServer,
+  ServerVariable,
+  AuthenticationConfig,
+  OAuth2Flows,
+  OAuth2Flow,
+  DocumentationTemplate,
+  TemplateVariable,
+  TemplateSectionConfig,
+  StyleConfig,
+  ColorScheme,
+  TypographyConfig,
+  LayoutConfig,
+  TemplateMetadata,
+  ValidationError as DocValidationError,
+  ValidationWarning as DocValidationWarning,
+  Author,
+  DocumentationAnalytics,
+  PageView,
+  SearchQuery,
+  FeedbackData,
+  ContentMetrics,
+  UserBehavior,
+  PerformanceMetrics as DocPerformanceMetrics,
+  AccessibilityMetrics,
+  AccessibilityViolation,
+  OptimizationOptions
+} from './documentation';
 
-// Performance Monitoring Types
+// Performance Monitoring Types (AC5)
 export type {
   DevToolsMetrics,
+  MonitoringSession,
+  MetricsMetadata,
+  ResourceUsage,
+  CPUUsage,
+  MemoryUsage,
+  NetworkUsage,
+  StorageUsage,
+  AIResourceUsage,
   CostTrackingData,
+  CostBreakdown,
+  ProviderCost,
+  ComputeCost,
+  StorageCost,
+  NetworkCost,
+  Budget,
+  CostAlert,
+  CostForecast,
+  CostOptimizationRecommendation,
+  PerformanceMetrics,
+  PerformanceScore,
+  OperationPerformance,
+  PerformanceBottleneck,
+  PerformanceTrend,
+  BenchmarkResult,
+  PerformanceAlert,
+  AlertType,
+  AlertSource,
+  AlertMetrics,
+  AlertContext,
+  AlertAction,
+  AlertResolution,
+  AlertingConfig,
+  NotificationChannel,
+  AlertRule,
+  EscalationPolicy,
+  SuppressionRule,
   OptimizationRecommendation,
-  PerformanceAlert
-} from './monitoring/types';
+  OptimizationImpact,
+  OptimizationEffort,
+  ImplementationGuide,
+  OptimizationMetrics,
+  Risk,
+  Timeline
+} from './monitoring';
 
-// Team Collaboration Types
+// Team Collaboration Types (AC6)
 export type {
-  TeamTemplate,
-  ReviewWorkflow,
-  RolePermissions,
-  CollaborationEvent
-} from './collaboration/types';
+  User,
+  UserProfile,
+  UserPreferences,
+  Team,
+  TeamMember,
+  TeamSettings,
+  TeamStats,
+  Organization,
+  Project,
+  ProjectCollaborator,
+  ProjectSettings,
+  ProjectMetadata,
+  CollaborationSession,
+  SessionParticipant,
+  SessionSettings,
+  SessionRecording,
+  CursorPosition,
+  Selection,
+  Role,
+  Permission,
+  RoleAssignment,
+  AccessCondition,
+  Message,
+  MessageContent,
+  Channel,
+  ChannelMember,
+  ChannelSettings,
+  Review,
+  ReviewComment,
+  ReviewSuggestion,
+  ReviewApproval,
+  Activity,
+  ActivityMetadata,
+  ActivityContext,
+  AuditLog,
+  UserStatus,
+  ExperienceLevel,
+  TeamRole,
+  ProjectRole,
+  SystemRole,
+  RoleType,
+  RoleScope,
+  PermissionScope,
+  Resource,
+  Action,
+  SessionType,
+  SessionStatus,
+  ParticipantRole,
+  ParticipantStatus,
+  MessageType,
+  ChannelType,
+  ReviewType,
+  ReviewStatus,
+  ActivityType,
+  ConditionType,
+  ConditionOperator
+} from './collaboration';
 
 // AI Development Tools Factory
 export { AIDevToolsFactory } from './ai-dev-tools-factory';
