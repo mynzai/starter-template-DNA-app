@@ -18,6 +18,7 @@ import {
   CoverageMetrics,
   PerformanceMetrics,
   SecurityMetrics,
+  SecurityVulnerability,
   AccessibilityMetrics,
   TestGenerationConfig,
 } from '../types';
@@ -418,7 +419,7 @@ export class TauriTestAdapter implements TestAdapter, FrameworkAdapter {
   }
 
   async getSecurityMetrics(): Promise<SecurityMetrics> {
-    const vulnerabilities = [];
+    const vulnerabilities: SecurityVulnerability[] = [];
 
     try {
       // Check Rust vulnerabilities

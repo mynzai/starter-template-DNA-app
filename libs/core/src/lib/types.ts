@@ -116,6 +116,7 @@ export interface FrameworkImplementation {
  * Enhanced DNA Module interface
  */
 export interface DNAModule {
+  readonly id: string;
   readonly metadata: DNAModuleMetadata;
   readonly dependencies: DNAModuleDependency[];
   readonly conflicts: DNAModuleConflict[];
@@ -221,6 +222,15 @@ export interface DNAFileSystem {
   mkdir(path: string): Promise<void>;
   remove(path: string): Promise<void>;
   list(path: string): Promise<string[]>;
+  access(path: string, mode?: number): Promise<void>;
+  pathExists(path: string): Promise<boolean>;
+  writeJSON(path: string, data: any, options?: { spaces?: number }): Promise<void>;
+  constants: {
+    R_OK: number;
+    W_OK: number;
+    X_OK: number;
+    F_OK: number;
+  };
 }
 
 /**
@@ -241,6 +251,7 @@ export interface TemplateConfig {
   readonly dnaModules: string[];
   readonly outputPath: string;
   readonly variables?: Record<string, any>;
+  readonly metadata?: Record<string, any>;
 }
 
 export enum SupportedFramework {
@@ -280,6 +291,7 @@ export interface GenerationMetrics {
   readonly filesGenerated: number;
   readonly linesOfCode: number;
   readonly testCoverage: number;
+  readonly pipelineMetrics?: PipelineMetrics;
 }
 
 /**
@@ -329,6 +341,7 @@ export interface DNAComposition {
   readonly framework: SupportedFramework;
   readonly templateType: TemplateType;
   readonly globalConfig: Record<string, any>;
+  readonly projectName?: string;
 }
 
 /**
@@ -377,15 +390,16 @@ export interface DNARegistryConfig {
   readonly sources: {
     readonly type: 'local' | 'remote' | 'npm';
     readonly path: string;
-    readonly priority: number;
+    readonly priority?: number;
   }[];
-  readonly cache: {
+  readonly cache?: {
     readonly enabled: boolean;
     readonly ttl: number;
-    readonly path: string;
+    readonly maxSize?: number;
+    readonly path?: string;
   };
   readonly validation: {
-    readonly strict: boolean;
+    readonly strict?: boolean;
     readonly allowExperimental: boolean;
     readonly allowDeprecated: boolean;
   };

@@ -1,0 +1,67 @@
+{
+  "version": "1.0.0",
+  "automation": {
+    "enabled": true,
+    "autoCommit": true,
+    "pushRemote": false,
+    "requireTests": true,
+    "requireQualityGates": true,
+    "commitOnProgress": true,
+    "commitOnTestSuccess": true,
+    "commitOnSessionEnd": true
+  },
+  "validation": {
+    "preCommitChecks": {
+      "lint": true,
+      "typeCheck": true,
+      "testCoverage": true,
+      "secretsScan": true,
+      "largFileCheck": true
+    },
+    "blockedPatterns": [
+      "*.key",
+      "*.pem",
+      "*.p12",
+      ".env.local",
+      ".env.production",
+      "secrets.json",
+      "credentials.json"
+    ],
+    "maxFileSize": 10485760,
+    "commitMessageValidation": {
+      "enabled": true,
+      "format": "conventional",
+      "types": ["feat", "fix", "docs", "style", "refactor", "test", "chore", "perf", "ci", "build"],
+      "maxLineLength": 100,
+      "requireScope": false,
+      "requireBody": false
+    }
+  },
+  "rollback": {
+    "enabled": true,
+    "maxRollbackPoints": 10,
+    "autoCreateBeforeOperations": true
+  },
+  "integration": {
+    "progressTracking": true,
+    "qualityGates": true,
+    "testResults": true,
+    "sessionManagement": true
+  },
+  "commitTemplates": {
+    "progress": "chore({{epic}}): progress update - {{filesModified}} files modified, {{testsAdded}} tests added",
+    "testSuccess": "test({{epic}}): all tests passing - {{coverage}}% coverage achieved",
+    "qualityGate": "chore({{epic}}): quality gates {{status}} - {{passed}}/{{total}} passed",
+    "sessionComplete": "feat({{epic}}-{{story}}): complete {{storyTitle}}\n\n{{description}}\n\n🤖 Generated with Claude Code\n\nCo-Authored-By: Claude <noreply@anthropic.com>",
+    "autoFix": "fix({{epic}}): auto-fix {{issueType}} - {{description}}"
+  },
+  "defaults": {
+    "signOff": true,
+    "coAuthor": {
+      "name": "Claude",
+      "email": "noreply@anthropic.com"
+    },
+    "includeMetrics": true,
+    "includeSessionId": true
+  }
+}

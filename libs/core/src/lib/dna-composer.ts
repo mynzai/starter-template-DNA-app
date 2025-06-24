@@ -86,7 +86,7 @@ export class DNAComposer extends EventEmitter {
       enhancedResult.errors.push(...performanceValidation.errors);
       enhancedResult.warnings.push(...performanceValidation.warnings);
       
-      enhancedResult.valid = enhancedResult.errors.length === 0;
+      (enhancedResult as any).valid = enhancedResult.errors.length === 0;
       
       if (enhancedResult.valid) {
         this.emit('composition:completed', {
@@ -162,7 +162,7 @@ export class DNAComposer extends EventEmitter {
 
         // Configure module
         const configuredConfig = await module.configure(moduleContext.moduleConfig, moduleContext);
-        moduleContext.moduleConfig = configuredConfig;
+        (moduleContext as any).moduleConfig = configuredConfig;
 
         // Validate module
         const validation = await module.validate(configuredConfig, moduleContext);
@@ -440,7 +440,7 @@ export class DNAComposer extends EventEmitter {
     result.warnings.push(...bestPracticeValidation.warnings);
 
     // Update performance metrics
-    result.performance.compositionTime = Date.now() - (Date.now() - result.performance.compositionTime);
+    (result.performance as any).compositionTime = Date.now() - (Date.now() - result.performance.compositionTime);
 
     return result;
   }

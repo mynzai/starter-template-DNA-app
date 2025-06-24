@@ -1,0 +1,292 @@
+version: '3.8'
+
+services:
+  # Development environment for all platforms
+  dev-environment:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - .:/workspace
+      - node_modules:/workspace/node_modules
+      - flutter_cache:/home/developer/.flutter
+      - android_cache:/home/developer/.android
+    ports:
+      - "3000:3000"   # Next.js
+      - "5173:5173"   # SvelteKit
+      - "1420:1420"   # Tauri
+      - "8081:8081"   # React Native Metro
+      - "19000:19000" # Expo
+      - "19001:19001" # Expo
+    environment:
+      - NODE_ENV=development
+      - FLUTTER_ROOT=/opt/flutter
+      - ANDROID_SDK_ROOT=/opt/android-sdk
+      - PATH=/opt/flutter/bin:/opt/android-sdk/cmdline-tools/latest/bin:$PATH
+    networks:
+      - dev-network
+    
+  # Next.js application
+  nextjs-app:
+    build:
+      context: ./platforms/nextjs
+      dockerfile: Dockerfile
+      target: development
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./platforms/nextjs:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - WATCHPACK_POLLING=true
+    networks:
+      - dev-network
+    depends_on:
+      - redis
+      - postgres
+    
+  # SvelteKit application
+  sveltekit-app:
+    build:
+      context: ./platforms/sveltekit
+      dockerfile: Dockerfile
+      target: development
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./platforms/sveltekit:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    networks:
+      - dev-network
+    depends_on:
+      - redis
+      - postgres
+  
+  # Tauri application (development server)
+  tauri-app:
+    build:
+      context: ./platforms/tauri
+      dockerfile: Dockerfile.dev
+    ports:
+      - "1420:1420"
+      - "1421:1421"
+    volumes:
+      - ./platforms/tauri:/app
+      - /app/node_modules
+      - /app/src-tauri/target
+    environment:
+      - NODE_ENV=development
+      - TAURI_DEV_WATCHER=true
+    networks:
+      - dev-network
+    depends_on:
+      - redis
+      - postgres
+    
+  # React Native Metro bundler
+  react-native-metro:
+    build:
+      context: ./platforms/react-native
+      dockerfile: Dockerfile.metro
+    ports:
+      - "8081:8081"
+      - "19000:19000"
+      - "19001:19001"
+    volumes:
+      - ./platforms/react-native:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - REACT_NATIVE_PACKAGER_HOSTNAME=0.0.0.0
+    networks:
+      - dev-network
+    
+  # Build environment for CI/CD
+  build-environment:
+    build:
+      context: .
+      dockerfile: Dockerfile.build
+    volumes:
+      - .:/workspace
+      - build_cache:/workspace/dist
+      - node_modules:/workspace/node_modules
+    environment:
+      - NODE_ENV=production
+      - CI=true
+    networks:
+      - dev-network
+    profiles:
+      - build
+    
+  # Testing environment
+  test-environment:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    volumes:
+      - .:/workspace
+      - coverage:/workspace/coverage
+      - node_modules:/workspace/node_modules
+    environment:
+      - NODE_ENV=test
+      - CI=true
+    networks:
+      - dev-network
+    profiles:
+      - test
+    
+  # Redis for caching and session storage
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - dev-network
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    
+  # PostgreSQL for database storage
+  postgres:
+    image: postgres:15-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=foundation_patterns
+      - POSTGRES_USER=developer
+      - POSTGRES_PASSWORD=development
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./build/database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - dev-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U developer -d foundation_patterns"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    
+  # Nginx for reverse proxy and static file serving
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./build/nginx.conf:/etc/nginx/nginx.conf
+      - ./build/ssl:/etc/nginx/ssl
+      - static_files:/usr/share/nginx/html
+    networks:
+      - dev-network
+    depends_on:
+      - nextjs-app
+      - sveltekit-app
+    profiles:
+      - production
+    
+  # Storybook for component documentation
+  storybook:
+    build:
+      context: .
+      dockerfile: Dockerfile.storybook
+    ports:
+      - "6006:6006"
+    volumes:
+      - .:/workspace
+      - node_modules:/workspace/node_modules
+    environment:
+      - NODE_ENV=development
+    networks:
+      - dev-network
+    profiles:
+      - docs
+    
+  # Documentation server
+  docs:
+    build:
+      context: .
+      dockerfile: Dockerfile.docs
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./docs:/usr/share/nginx/html
+    networks:
+      - dev-network
+    profiles:
+      - docs
+    
+  # Monitoring with Prometheus
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./build/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    networks:
+      - dev-network
+    profiles:
+      - monitoring
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=30d'
+      - '--web.enable-lifecycle'
+    
+  # Grafana for metrics visualization
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./build/monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./build/monitoring/grafana/datasources:/etc/grafana/provisioning/datasources
+    networks:
+      - dev-network
+    profiles:
+      - monitoring
+    depends_on:
+      - prometheus
+
+networks:
+  dev-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+volumes:
+  node_modules:
+    driver: local
+  flutter_cache:
+    driver: local
+  android_cache:
+    driver: local
+  build_cache:
+    driver: local
+  coverage:
+    driver: local
+  redis_data:
+    driver: local
+  postgres_data:
+    driver: local
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local
+  static_files:
+    driver: local

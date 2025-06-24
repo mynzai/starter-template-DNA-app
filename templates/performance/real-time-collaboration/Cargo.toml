@@ -1,0 +1,75 @@
+[package]
+name = "{{projectName}}"
+version = "0.1.0"
+description = "High-performance real-time collaboration platform"
+authors = ["{{author}}"]
+license = "MIT"
+repository = "https://github.com/{{organization}}/{{projectName}}"
+default-run = "{{projectName}}"
+edition = "2021"
+rust-version = "1.75"
+
+[build-dependencies]
+tauri-build = { version = "2.0", features = [] }
+
+[dependencies]
+tauri = { version = "2.0", features = [ "devtools", "shell-open"] }
+tauri-plugin-shell = "2.0"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio = { version = "1", features = ["full"] }
+tokio-tungstenite = "0.20"
+futures-util = "0.3"
+uuid = { version = "1.0", features = ["v4", "serde"] }
+anyhow = "1.0"
+thiserror = "1.0"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+chrono = { version = "0.4", features = ["serde"] }
+dashmap = "5.5"
+parking_lot = "0.12"
+crossbeam = "0.8"
+rayon = "1.7"
+
+# WebRTC dependencies
+webrtc = "0.10"
+webrtc-util = "0.8"
+webrtc-data = "0.8"
+webrtc-media = "0.6"
+webrtc-sctp = "0.9"
+webrtc-dtls = "0.8"
+webrtc-ice = "0.10"
+webrtc-srtp = "0.12"
+
+# Operational Transformation
+operational-transform = { path = "./src/ot" }
+
+# Performance monitoring
+metrics = "0.21"
+metrics-exporter-prometheus = "0.12"
+
+# Configuration
+config = "0.13"
+toml = "0.8"
+
+[target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
+tauri-plugin-updater = "2.0"
+
+[features]
+# this feature is used for production builds or when `devPath` points to the filesystem
+# DO NOT REMOVE!!
+custom-protocol = ["tauri/custom-protocol"]
+
+[[bin]]
+name = "{{projectName}}"
+path = "src/main.rs"
+
+[workspace]
+members = ["src/ot"]
+
+[profile.release]
+panic = "abort" # Strip expensive panic clean-up logic
+codegen-units = 1 # Compile crates one after another so the compiler can optimize better
+lto = true # Enables link to optimizations
+opt-level = "s" # Optimize for binary size
+strip = true # Remove debug symbols

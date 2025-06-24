@@ -17,6 +17,16 @@ export * from './lib/dna-migration';
 export * from './lib/framework-modules';
 export * from './lib/template-generation-pipeline';
 
+// Epic 5 Story 1: DNA Engine Foundation
+export * from './lib/dna-engine';
+export * from './lib/dependency-resolver';
+export * from './lib/hot-reload-system';
+export * from './lib/module-lifecycle-manager';
+
+// Epic 6 Story 4: Automated Quality Validation
+export * from './lib/quality-validation/quality-validation-engine';
+export * from './lib/quality-validation/automated-quality-orchestrator';
+
 // Re-export framework-specific base classes for convenience
 export {
   FlutterDNAModule,

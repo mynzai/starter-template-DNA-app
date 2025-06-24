@@ -188,6 +188,13 @@ export interface TestGenerationConfig {
   framework: Framework;
   patterns: TestPattern[];
   templates: TestTemplate[];
+  coverageTargets?: {
+    lines?: number;
+    functions?: number;
+    branches?: number;
+    statements?: number;
+  };
+  maxTests?: number;
 }
 
 export interface TestPattern {
@@ -261,3 +268,85 @@ export interface TestEvent {
 }
 
 export type TestEventHandler = (event: TestEvent) => void;
+
+// Coverage types for coverage-reporter.ts
+export type FrameworkType = Framework;
+
+export interface CoverageReport {
+  framework: Framework;
+  timestamp: Date;
+  metrics: CoverageDetailedMetrics;
+  thresholds: CoverageThreshold;
+  passed: boolean;
+  failures: string[];
+  outputPath: string;
+  projectPath?: string;
+  detailedFiles?: any[];
+}
+
+export interface CoverageDetailedMetrics {
+  lines: CoverageData;
+  functions: CoverageData;
+  branches: CoverageData;
+  statements: CoverageData;
+}
+
+export interface CoverageData {
+  total: number;
+  covered: number;
+  percentage: number;
+  uncovered: CoverageUncoveredItem[];
+}
+
+export interface CoverageUncoveredItem {
+  file: string;
+  line: number;
+  column?: number;
+  reason: string;
+}
+
+export interface CoverageThreshold {
+  lines: number;
+  functions: number;
+  branches: number;
+  statements: number;
+}
+
+export interface CoverageConfig {
+  enabled: boolean;
+  threshold: CoverageThreshold;
+  outputPath: string;
+  formats: ('json' | 'html' | 'text' | 'lcov')[];
+  excludePatterns: string[];
+  includePatterns: string[];
+}
+
+// Additional types for compatibility
+export type DNAModuleId = string;
+
+export interface TemplateGenerationResult {
+  success: boolean;
+  outputPath: string;
+  generatedFiles: string[];
+  errors: string[];
+  warnings: string[];
+  metrics: {
+    executionTime: number;
+    filesGenerated: number;
+    linesOfCode: number;
+  };
+}
+
+export interface GeneratedTest {
+  name: string;
+  filePath: string;
+  content: string;
+  framework: Framework;
+  testType: TestType;
+  coverage: {
+    lines: number;
+    functions: number;
+    branches: number;
+    statements: number;
+  };
+}

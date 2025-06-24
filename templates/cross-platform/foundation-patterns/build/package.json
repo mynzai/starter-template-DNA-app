@@ -1,0 +1,170 @@
+{
+  "name": "cross-platform-foundation-patterns",
+  "version": "1.0.0",
+  "description": "Cross-platform foundation patterns for unified development across Flutter, React Native, Next.js, Tauri, and SvelteKit",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "npm run build:all",
+    "build:all": "concurrently \"npm run build:web\" \"npm run build:mobile\" \"npm run build:desktop\"",
+    "build:web": "concurrently \"npm run build:nextjs\" \"npm run build:sveltekit\"",
+    "build:mobile": "concurrently \"npm run build:react-native\" \"npm run build:flutter\"",
+    "build:desktop": "npm run build:tauri",
+    
+    "build:nextjs": "cd platforms/nextjs && npm run build",
+    "build:sveltekit": "cd platforms/sveltekit && npm run build",
+    "build:react-native": "cd platforms/react-native && npm run build",
+    "build:flutter": "cd platforms/flutter && flutter build",
+    "build:tauri": "cd platforms/tauri && npm run tauri build",
+    
+    "dev": "npm run dev:web",
+    "dev:web": "npm run dev:nextjs",
+    "dev:nextjs": "cd platforms/nextjs && npm run dev",
+    "dev:sveltekit": "cd platforms/sveltekit && npm run dev",
+    "dev:react-native": "cd platforms/react-native && npm run start",
+    "dev:flutter": "cd platforms/flutter && flutter run",
+    "dev:tauri": "cd platforms/tauri && npm run tauri dev",
+    
+    "test": "npm run test:all",
+    "test:all": "concurrently \"npm run test:shared\" \"npm run test:platforms\"",
+    "test:shared": "jest src/",
+    "test:platforms": "concurrently \"npm run test:nextjs\" \"npm run test:react-native\" \"npm run test:flutter\" \"npm run test:tauri\"",
+    "test:nextjs": "cd platforms/nextjs && npm run test",
+    "test:sveltekit": "cd platforms/sveltekit && npm run test",
+    "test:react-native": "cd platforms/react-native && npm run test",
+    "test:flutter": "cd platforms/flutter && flutter test",
+    "test:tauri": "cd platforms/tauri && npm run test",
+    
+    "lint": "npm run lint:all",
+    "lint:all": "concurrently \"npm run lint:shared\" \"npm run lint:platforms\"",
+    "lint:shared": "eslint src/ --ext .ts,.js",
+    "lint:platforms": "concurrently \"npm run lint:nextjs\" \"npm run lint:react-native\" \"npm run lint:tauri\"",
+    "lint:nextjs": "cd platforms/nextjs && npm run lint",
+    "lint:sveltekit": "cd platforms/sveltekit && npm run lint",
+    "lint:react-native": "cd platforms/react-native && npm run lint",
+    "lint:flutter": "cd platforms/flutter && dart analyze",
+    "lint:tauri": "cd platforms/tauri && npm run lint",
+    
+    "type-check": "npm run type-check:all",
+    "type-check:all": "concurrently \"npm run type-check:shared\" \"npm run type-check:platforms\"",
+    "type-check:shared": "tsc --noEmit",
+    "type-check:platforms": "concurrently \"npm run type-check:nextjs\" \"npm run type-check:react-native\" \"npm run type-check:tauri\"",
+    "type-check:nextjs": "cd platforms/nextjs && npm run type-check",
+    "type-check:sveltekit": "cd platforms/sveltekit && npm run check",
+    "type-check:react-native": "cd platforms/react-native && npm run type-check",
+    "type-check:tauri": "cd platforms/tauri && npm run type-check",
+    
+    "format": "prettier --write \"**/*.{ts,js,json,md}\" --ignore-path .gitignore",
+    "format:check": "prettier --check \"**/*.{ts,js,json,md}\" --ignore-path .gitignore",
+    
+    "clean": "npm run clean:all",
+    "clean:all": "concurrently \"npm run clean:shared\" \"npm run clean:platforms\"",
+    "clean:shared": "rimraf dist/ coverage/ .nyc_output/",
+    "clean:platforms": "concurrently \"npm run clean:nextjs\" \"npm run clean:react-native\" \"npm run clean:flutter\" \"npm run clean:tauri\"",
+    "clean:nextjs": "cd platforms/nextjs && npm run clean",
+    "clean:sveltekit": "cd platforms/sveltekit && npm run clean",
+    "clean:react-native": "cd platforms/react-native && npm run clean",
+    "clean:flutter": "cd platforms/flutter && flutter clean",
+    "clean:tauri": "cd platforms/tauri && npm run clean",
+    
+    "setup": "npm run setup:all",
+    "setup:all": "npm install && npm run setup:platforms",
+    "setup:platforms": "concurrently \"npm run setup:nextjs\" \"npm run setup:react-native\" \"npm run setup:tauri\"",
+    "setup:nextjs": "cd platforms/nextjs && npm install",
+    "setup:sveltekit": "cd platforms/sveltekit && npm install",
+    "setup:react-native": "cd platforms/react-native && npm install && cd ios && pod install",
+    "setup:flutter": "cd platforms/flutter && flutter pub get",
+    "setup:tauri": "cd platforms/tauri && npm install",
+    
+    "deploy": "npm run deploy:all",
+    "deploy:all": "concurrently \"npm run deploy:web\" \"npm run deploy:mobile\" \"npm run deploy:desktop\"",
+    "deploy:web": "concurrently \"npm run deploy:nextjs\" \"npm run deploy:sveltekit\"",
+    "deploy:mobile": "concurrently \"npm run deploy:react-native\" \"npm run deploy:flutter\"",
+    "deploy:desktop": "npm run deploy:tauri",
+    "deploy:nextjs": "cd platforms/nextjs && npm run deploy",
+    "deploy:sveltekit": "cd platforms/sveltekit && npm run deploy",
+    "deploy:react-native": "cd platforms/react-native && npm run deploy",
+    "deploy:flutter": "cd platforms/flutter && flutter build apk && flutter build ios",
+    "deploy:tauri": "cd platforms/tauri && npm run tauri build",
+    
+    "analyze": "npm run analyze:all",
+    "analyze:all": "concurrently \"npm run analyze:bundle\" \"npm run analyze:dependencies\" \"npm run analyze:security\"",
+    "analyze:bundle": "concurrently \"npm run analyze:nextjs\" \"npm run analyze:react-native\"",
+    "analyze:nextjs": "cd platforms/nextjs && npm run analyze",
+    "analyze:react-native": "cd platforms/react-native && npm run analyze",
+    "analyze:dependencies": "npm audit && depcheck",
+    "analyze:security": "npm audit --audit-level moderate",
+    
+    "docs": "typedoc src/ --out docs/",
+    "docs:serve": "serve docs/",
+    
+    "version": "npm run version:all",
+    "version:all": "npm version patch && npm run version:platforms",
+    "version:platforms": "concurrently \"npm run version:nextjs\" \"npm run version:react-native\" \"npm run version:tauri\"",
+    "version:nextjs": "cd platforms/nextjs && npm version patch",
+    "version:react-native": "cd platforms/react-native && npm version patch",
+    "version:tauri": "cd platforms/tauri && npm version patch"
+  },
+  "keywords": [
+    "cross-platform",
+    "flutter",
+    "react-native",
+    "nextjs",
+    "tauri",
+    "sveltekit",
+    "foundation",
+    "patterns",
+    "ui",
+    "state-management",
+    "navigation",
+    "notifications",
+    "file-system"
+  ],
+  "author": "DNA Template Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/jest": "^29.5.0",
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "concurrently": "^8.2.0",
+    "depcheck": "^1.4.0",
+    "eslint": "^8.45.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "jest": "^29.6.0",
+    "prettier": "^3.0.0",
+    "rimraf": "^5.0.0",
+    "serve": "^14.2.0",
+    "ts-jest": "^29.1.0",
+    "typedoc": "^0.25.0",
+    "typescript": "^5.1.0"
+  },
+  "dependencies": {
+    "tslib": "^2.6.0"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-native": ">=0.72.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dna-templates/cross-platform-foundation-patterns.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dna-templates/cross-platform-foundation-patterns/issues"
+  },
+  "homepage": "https://github.com/dna-templates/cross-platform-foundation-patterns#readme",
+  "files": [
+    "dist/",
+    "src/",
+    "platforms/",
+    "build/",
+    "README.md",
+    "LICENSE"
+  ]
+}

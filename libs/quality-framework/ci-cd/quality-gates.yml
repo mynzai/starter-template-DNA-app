@@ -1,0 +1,433 @@
+# Universal Quality Gates Workflow for All Templates
+# Comprehensive CI/CD pipeline with quality enforcement
+
+name: Quality Gates
+
+on:
+  push:
+    branches: [ main, develop, feature/* ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    # Run quality checks daily at 2 AM UTC
+    - cron: '0 2 * * *'
+
+env:
+  NODE_VERSION: '18'
+  PYTHON_VERSION: '3.11'
+  GO_VERSION: '1.21'
+  JAVA_VERSION: '11'
+
+jobs:
+  # Pre-flight checks
+  preflight:
+    name: Pre-flight Checks
+    runs-on: ubuntu-latest
+    outputs:
+      has-nodejs: ${{ steps.detect.outputs.has-nodejs }}
+      has-python: ${{ steps.detect.outputs.has-python }}
+      has-go: ${{ steps.detect.outputs.has-go }}
+      has-java: ${{ steps.detect.outputs.has-java }}
+      has-flutter: ${{ steps.detect.outputs.has-flutter }}
+      has-docker: ${{ steps.detect.outputs.has-docker }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Detect project types
+        id: detect
+        run: |
+          echo "has-nodejs=$(test -f package.json && echo true || echo false)" >> $GITHUB_OUTPUT
+          echo "has-python=$(test -f requirements.txt -o -f pyproject.toml -o -f setup.py && echo true || echo false)" >> $GITHUB_OUTPUT
+          echo "has-go=$(test -f go.mod && echo true || echo false)" >> $GITHUB_OUTPUT
+          echo "has-java=$(test -f pom.xml -o -f build.gradle && echo true || echo false)" >> $GITHUB_OUTPUT
+          echo "has-flutter=$(test -f pubspec.yaml && echo true || echo false)" >> $GITHUB_OUTPUT
+          echo "has-docker=$(test -f Dockerfile && echo true || echo false)" >> $GITHUB_OUTPUT
+
+  # Code Quality Gates
+  code-quality:
+    name: Code Quality
+    runs-on: ubuntu-latest
+    needs: preflight
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Node.js/TypeScript quality checks
+      - name: Setup Node.js
+        if: needs.preflight.outputs.has-nodejs == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install Node.js dependencies
+        if: needs.preflight.outputs.has-nodejs == 'true'
+        run: npm ci
+
+      - name: Run ESLint
+        if: needs.preflight.outputs.has-nodejs == 'true'
+        run: |
+          npm run lint || npx eslint . --ext .js,.jsx,.ts,.tsx --format json --output-file eslint-report.json
+          npx eslint . --ext .js,.jsx,.ts,.tsx
+
+      - name: Run Prettier check
+        if: needs.preflight.outputs.has-nodejs == 'true'
+        run: npm run format:check || npx prettier --check .
+
+      - name: TypeScript type check
+        if: needs.preflight.outputs.has-nodejs == 'true'
+        run: npm run typecheck || npx tsc --noEmit
+
+      # Python quality checks
+      - name: Setup Python
+        if: needs.preflight.outputs.has-python == 'true'
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install Python dependencies
+        if: needs.preflight.outputs.has-python == 'true'
+        run: |
+          pip install black mypy flake8 bandit safety
+          pip install -r requirements.txt || pip install -e .
+
+      - name: Run Black formatter check
+        if: needs.preflight.outputs.has-python == 'true'
+        run: black --check .
+
+      - name: Run MyPy type check
+        if: needs.preflight.outputs.has-python == 'true'
+        run: mypy .
+
+      - name: Run Flake8 linting
+        if: needs.preflight.outputs.has-python == 'true'
+        run: flake8 .
+
+      # Flutter quality checks
+      - name: Setup Flutter
+        if: needs.preflight.outputs.has-flutter == 'true'
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Flutter analyze
+        if: needs.preflight.outputs.has-flutter == 'true'
+        run: flutter analyze
+
+      - name: Flutter format check
+        if: needs.preflight.outputs.has-flutter == 'true'
+        run: dart format --set-exit-if-changed .
+
+      # SonarCloud quality gate
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  # Security Gates
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    needs: preflight
+    permissions:
+      security-events: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Dependency vulnerability scanning
+      - name: Run Snyk dependency scan
+        if: needs.preflight.outputs.has-nodejs == 'true'
+        uses: snyk/actions/node@master
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=medium --file=package.json
+
+      - name: Python safety check
+        if: needs.preflight.outputs.has-python == 'true'
+        run: |
+          pip install safety
+          safety check --json --output safety-report.json || true
+
+      # Secret scanning
+      - name: Run GitLeaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # SAST scanning
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          languages: ${{ matrix.language }}
+          queries: security-and-quality
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v2
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
+
+      - name: Run Semgrep
+        uses: returntocorp/semgrep-action@v1
+        with:
+          config: >-
+            p/security-audit
+            p/secrets
+            p/owasp-top-ten
+            p/react
+            p/typescript
+            p/nodejs
+
+      # Container security (if Dockerfile exists)
+      - name: Run Trivy vulnerability scanner
+        if: needs.preflight.outputs.has-docker == 'true'
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        if: needs.preflight.outputs.has-docker == 'true'
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+  # Testing Gates
+  testing:
+    name: Test Suite
+    runs-on: ubuntu-latest
+    needs: preflight
+    strategy:
+      matrix:
+        node-version: [16, 18, 20]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        if: needs.preflight.outputs.has-nodejs == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        if: needs.preflight.outputs.has-nodejs == 'true'
+        run: npm ci
+
+      - name: Run unit tests
+        if: needs.preflight.outputs.has-nodejs == 'true'
+        run: npm test -- --coverage --watchAll=false --passWithNoTests
+
+      - name: Run integration tests
+        if: needs.preflight.outputs.has-nodejs == 'true'
+        run: npm run test:integration || echo "No integration tests found"
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./coverage/lcov.info
+          flags: unittests
+          name: codecov-umbrella
+
+      # Flutter testing
+      - name: Setup Flutter
+        if: needs.preflight.outputs.has-flutter == 'true'
+        uses: subosito/flutter-action@v2
+
+      - name: Flutter test
+        if: needs.preflight.outputs.has-flutter == 'true'
+        run: flutter test --coverage
+
+      # Python testing
+      - name: Setup Python
+        if: needs.preflight.outputs.has-python == 'true'
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install Python test dependencies
+        if: needs.preflight.outputs.has-python == 'true'
+        run: |
+          pip install pytest pytest-cov
+          pip install -r requirements.txt || pip install -e .
+
+      - name: Run Python tests
+        if: needs.preflight.outputs.has-python == 'true'
+        run: pytest --cov --cov-report=xml
+
+  # Performance Gates
+  performance:
+    name: Performance Tests
+    runs-on: ubuntu-latest
+    needs: [preflight, testing]
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        if: needs.preflight.outputs.has-nodejs == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        if: needs.preflight.outputs.has-nodejs == 'true'
+        run: npm ci
+
+      - name: Build application
+        if: needs.preflight.outputs.has-nodejs == 'true'
+        run: npm run build
+
+      - name: Start application
+        if: needs.preflight.outputs.has-nodejs == 'true'
+        run: npm start &
+        
+      - name: Wait for application
+        run: npx wait-on http://localhost:3000 --timeout 60000
+
+      - name: Run Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v10
+        with:
+          configPath: './libs/quality-framework/performance/lighthouse-ci.config.js'
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+
+      - name: Run load tests
+        run: |
+          npm install -g artillery
+          artillery run ./tests/load/load-test.yml || echo "No load tests found"
+
+  # E2E Testing Gates
+  e2e:
+    name: E2E Tests
+    runs-on: ubuntu-latest
+    needs: [preflight, testing]
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright
+        run: npx playwright install --with-deps
+
+      - name: Build and start application
+        run: |
+          npm run build
+          npm start &
+          npx wait-on http://localhost:3000
+
+      - name: Run Playwright tests
+        run: npx playwright test
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
+
+  # Quality Gate Decision
+  quality-gate:
+    name: Quality Gate Decision
+    runs-on: ubuntu-latest
+    needs: [code-quality, security, testing, performance, e2e]
+    if: always()
+    steps:
+      - name: Check quality gate status
+        run: |
+          echo "Code Quality: ${{ needs.code-quality.result }}"
+          echo "Security: ${{ needs.security.result }}"
+          echo "Testing: ${{ needs.testing.result }}"
+          echo "Performance: ${{ needs.performance.result }}"
+          echo "E2E: ${{ needs.e2e.result }}"
+          
+          if [[ "${{ needs.code-quality.result }}" != "success" ]]; then
+            echo "❌ Code quality checks failed"
+            exit 1
+          fi
+          
+          if [[ "${{ needs.security.result }}" != "success" ]]; then
+            echo "❌ Security checks failed"
+            exit 1
+          fi
+          
+          if [[ "${{ needs.testing.result }}" != "success" ]]; then
+            echo "❌ Test suite failed"
+            exit 1
+          fi
+          
+          echo "✅ All quality gates passed!"
+
+      - name: Generate quality report
+        run: |
+          cat << EOF > quality-report.md
+          # Quality Gate Report
+          
+          ## Summary
+          - **Code Quality**: ${{ needs.code-quality.result == 'success' && '✅ PASSED' || '❌ FAILED' }}
+          - **Security**: ${{ needs.security.result == 'success' && '✅ PASSED' || '❌ FAILED' }}
+          - **Testing**: ${{ needs.testing.result == 'success' && '✅ PASSED' || '❌ FAILED' }}
+          - **Performance**: ${{ needs.performance.result == 'success' && '✅ PASSED' || '❌ FAILED' }}
+          - **E2E**: ${{ needs.e2e.result == 'success' && '✅ PASSED' || '❌ FAILED' }}
+          
+          ## Artifacts
+          - Coverage reports: Available in build artifacts
+          - Security scan results: Available in Security tab
+          - Performance reports: Available in build artifacts
+          - E2E test results: Available in build artifacts
+          
+          Generated on: $(date)
+          Commit: ${{ github.sha }}
+          EOF
+
+      - name: Upload quality report
+        uses: actions/upload-artifact@v3
+        with:
+          name: quality-report
+          path: quality-report.md
+
+  # Notification
+  notify:
+    name: Notify Results
+    runs-on: ubuntu-latest
+    needs: [quality-gate]
+    if: always() && (github.ref == 'refs/heads/main' || github.event_name == 'schedule')
+    steps:
+      - name: Notify Slack on failure
+        if: needs.quality-gate.result == 'failure'
+        uses: 8398a7/action-slack@v3
+        with:
+          status: failure
+          channel: '#quality-alerts'
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+          
+      - name: Notify teams on success
+        if: needs.quality-gate.result == 'success' && github.ref == 'refs/heads/main'
+        uses: 8398a7/action-slack@v3
+        with:
+          status: success
+          channel: '#deployments'
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}

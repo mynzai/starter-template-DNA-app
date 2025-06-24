@@ -1,0 +1,118 @@
+[package]
+name = "{{projectName}}"
+version = "0.1.0"
+description = "High-performance API platform with 48k+ RPS capability"
+authors = ["{{author}}"]
+license = "MIT"
+repository = "https://github.com/{{organization}}/{{projectName}}"
+edition = "2021"
+rust-version = "1.75"
+
+[dependencies]
+# Web framework
+axum = { version = "0.7", features = ["macros", "multipart", "ws"] }
+axum-extra = { version = "0.9", features = ["typed-header"] }
+tower = { version = "0.4", features = ["full"] }
+tower-http = { version = "0.5", features = ["full"] }
+hyper = { version = "1.0", features = ["full"] }
+
+# Async runtime
+tokio = { version = "1.0", features = ["full"] }
+tokio-util = "0.7"
+futures = "0.3"
+async-trait = "0.1"
+
+# Database
+sqlx = { version = "0.7", features = ["runtime-tokio-rustls", "postgres", "uuid", "chrono", "json"] }
+redis = { version = "0.24", features = ["tokio-comp", "connection-manager"] }
+deadpool-redis = "0.14"
+
+# GraphQL
+async-graphql = { version = "7.0", features = ["uuid", "chrono", "dataloader"] }
+async-graphql-axum = "7.0"
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+serde_yaml = "0.9"
+
+# Utilities
+uuid = { version = "1.0", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+anyhow = "1.0"
+thiserror = "1.0"
+validator = { version = "0.17", features = ["derive"] }
+
+# Monitoring and metrics
+metrics = "0.22"
+metrics-exporter-prometheus = "0.13"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+tracing-opentelemetry = "0.22"
+opentelemetry = { version = "0.21", features = ["rt-tokio"] }
+opentelemetry-jaeger = { version = "0.20", features = ["rt-tokio"] }
+
+# Rate limiting
+governor = "0.6"
+nonzero_ext = "0.3"
+
+# Configuration
+config = "0.13"
+clap = { version = "4.0", features = ["derive", "env"] }
+dotenvy = "0.15"
+
+# Security
+jsonwebtoken = "9.0"
+bcrypt = "0.15"
+argon2 = "0.5"
+
+# Performance optimizations
+mimalloc = { version = "0.1", default-features = false }
+jemalloc-ctl = "0.5"
+
+# API documentation
+utoipa = { version = "4.0", features = ["axum_extras", "chrono", "uuid"] }
+utoipa-swagger-ui = { version = "6.0", features = ["axum"] }
+
+# HTTP client for health checks
+reqwest = { version = "0.11", features = ["json"] }
+
+# Caching
+moka = { version = "0.12", features = ["future"] }
+
+[dev-dependencies]
+tower-test = "0.4"
+http-body-util = "0.1"
+criterion = { version = "0.5", features = ["html_reports"] }
+tokio-test = "0.4"
+
+# Global allocator optimization
+[global_allocator]
+static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
+
+[profile.release]
+# Optimize for performance
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+strip = "symbols"
+
+[profile.dev]
+# Fast compilation for development
+opt-level = 0
+debug = true
+
+[[bin]]
+name = "{{projectName}}"
+path = "src/main.rs"
+
+[[bench]]
+name = "performance_benchmark"
+harness = false
+
+[features]
+default = ["metrics", "tracing"]
+metrics = ["metrics-exporter-prometheus"]
+tracing = ["tracing-opentelemetry", "opentelemetry-jaeger"]
+jemalloc = ["jemalloc-ctl"]

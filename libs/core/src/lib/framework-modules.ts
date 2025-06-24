@@ -4,14 +4,14 @@
 
 import { z } from 'zod';
 import {
-  BaseDNAModule,
   DNAModuleContext,
   DNAModuleFile,
   SupportedFramework,
   CompatibilityLevel,
   DNAModuleCategory,
   FrameworkImplementation
-} from './index';
+} from './types';
+import { BaseDNAModule } from './dna-module';
 
 /**
  * Base class for Flutter DNA modules
@@ -488,7 +488,7 @@ export abstract class SvelteKitDNAModule extends BaseDNAModule {
     stores?: string[];
     exports?: string[];
   }): string {
-    const scriptContent = [];
+    const scriptContent: string[] = [];
     
     if (config.props && config.props.length > 0) {
       const propsDeclaration = config.props.map(prop => {

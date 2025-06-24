@@ -1,0 +1,280 @@
+{
+  "color": {
+    "base": {
+      "white": {
+        "value": { "h": 0, "s": 0, "l": 100 },
+        "type": "color",
+        "description": "Pure white"
+      },
+      "black": {
+        "value": { "h": 0, "s": 0, "l": 0 },
+        "type": "color",
+        "description": "Pure black"
+      },
+      "transparent": {
+        "value": { "h": 0, "s": 0, "l": 0, "a": 0 },
+        "type": "color",
+        "description": "Transparent"
+      }
+    },
+    "primary": {
+      "50": {
+        "value": { "h": 221, "s": 83, "l": 97 },
+        "type": "color",
+        "description": "Primary color - lightest"
+      },
+      "100": {
+        "value": { "h": 221, "s": 84, "l": 94 },
+        "type": "color",
+        "description": "Primary color - very light"
+      },
+      "200": {
+        "value": { "h": 221, "s": 83, "l": 88 },
+        "type": "color",
+        "description": "Primary color - light"
+      },
+      "300": {
+        "value": { "h": 221, "s": 84, "l": 78 },
+        "type": "color",
+        "description": "Primary color - medium light"
+      },
+      "400": {
+        "value": { "h": 221, "s": 83, "l": 66 },
+        "type": "color",
+        "description": "Primary color - medium"
+      },
+      "500": {
+        "value": { "h": 221, "s": 83, "l": 53 },
+        "type": "color",
+        "description": "Primary color - base"
+      },
+      "600": {
+        "value": { "h": 221, "s": 83, "l": 43 },
+        "type": "color",
+        "description": "Primary color - medium dark"
+      },
+      "700": {
+        "value": { "h": 221, "s": 84, "l": 35 },
+        "type": "color",
+        "description": "Primary color - dark"
+      },
+      "800": {
+        "value": { "h": 221, "s": 84, "l": 29 },
+        "type": "color",
+        "description": "Primary color - very dark"
+      },
+      "900": {
+        "value": { "h": 221, "s": 84, "l": 24 },
+        "type": "color",
+        "description": "Primary color - darkest"
+      },
+      "950": {
+        "value": { "h": 221, "s": 84, "l": 16 },
+        "type": "color",
+        "description": "Primary color - ultra dark"
+      }
+    },
+    "secondary": {
+      "50": {
+        "value": { "h": 260, "s": 60, "l": 97 },
+        "type": "color",
+        "description": "Secondary color - lightest"
+      },
+      "100": {
+        "value": { "h": 260, "s": 57, "l": 94 },
+        "type": "color",
+        "description": "Secondary color - very light"
+      },
+      "200": {
+        "value": { "h": 260, "s": 60, "l": 88 },
+        "type": "color",
+        "description": "Secondary color - light"
+      },
+      "300": {
+        "value": { "h": 260, "s": 58, "l": 79 },
+        "type": "color",
+        "description": "Secondary color - medium light"
+      },
+      "400": {
+        "value": { "h": 260, "s": 57, "l": 67 },
+        "type": "color",
+        "description": "Secondary color - medium"
+      },
+      "500": {
+        "value": { "h": 260, "s": 57, "l": 54 },
+        "type": "color",
+        "description": "Secondary color - base"
+      },
+      "600": {
+        "value": { "h": 260, "s": 58, "l": 44 },
+        "type": "color",
+        "description": "Secondary color - medium dark"
+      },
+      "700": {
+        "value": { "h": 260, "s": 58, "l": 36 },
+        "type": "color",
+        "description": "Secondary color - dark"
+      },
+      "800": {
+        "value": { "h": 260, "s": 58, "l": 30 },
+        "type": "color",
+        "description": "Secondary color - very dark"
+      },
+      "900": {
+        "value": { "h": 260, "s": 59, "l": 25 },
+        "type": "color",
+        "description": "Secondary color - darkest"
+      },
+      "950": {
+        "value": { "h": 260, "s": 59, "l": 16 },
+        "type": "color",
+        "description": "Secondary color - ultra dark"
+      }
+    },
+    "neutral": {
+      "50": {
+        "value": { "h": 210, "s": 20, "l": 98 },
+        "type": "color",
+        "description": "Neutral color - lightest"
+      },
+      "100": {
+        "value": { "h": 210, "s": 20, "l": 95 },
+        "type": "color",
+        "description": "Neutral color - very light"
+      },
+      "200": {
+        "value": { "h": 210, "s": 16, "l": 93 },
+        "type": "color",
+        "description": "Neutral color - light"
+      },
+      "300": {
+        "value": { "h": 210, "s": 14, "l": 89 },
+        "type": "color",
+        "description": "Neutral color - medium light"
+      },
+      "400": {
+        "value": { "h": 210, "s": 14, "l": 83 },
+        "type": "color",
+        "description": "Neutral color - medium"
+      },
+      "500": {
+        "value": { "h": 210, "s": 11, "l": 71 },
+        "type": "color",
+        "description": "Neutral color - base"
+      },
+      "600": {
+        "value": { "h": 210, "s": 7, "l": 56 },
+        "type": "color",
+        "description": "Neutral color - medium dark"
+      },
+      "700": {
+        "value": { "h": 210, "s": 9, "l": 31 },
+        "type": "color",
+        "description": "Neutral color - dark"
+      },
+      "800": {
+        "value": { "h": 210, "s": 10, "l": 23 },
+        "type": "color",
+        "description": "Neutral color - very dark"
+      },
+      "900": {
+        "value": { "h": 210, "s": 11, "l": 15 },
+        "type": "color",
+        "description": "Neutral color - darkest"
+      },
+      "950": {
+        "value": { "h": 210, "s": 13, "l": 9 },
+        "type": "color",
+        "description": "Neutral color - ultra dark"
+      }
+    },
+    "success": {
+      "50": {
+        "value": { "h": 138, "s": 76, "l": 97 },
+        "type": "color",
+        "description": "Success color - lightest"
+      },
+      "500": {
+        "value": { "h": 142, "s": 71, "l": 45 },
+        "type": "color",
+        "description": "Success color - base"
+      },
+      "600": {
+        "value": { "h": 142, "s": 76, "l": 36 },
+        "type": "color",
+        "description": "Success color - medium dark"
+      },
+      "900": {
+        "value": { "h": 140, "s": 84, "l": 17 },
+        "type": "color",
+        "description": "Success color - darkest"
+      }
+    },
+    "warning": {
+      "50": {
+        "value": { "h": 48, "s": 96, "l": 97 },
+        "type": "color",
+        "description": "Warning color - lightest"
+      },
+      "500": {
+        "value": { "h": 45, "s": 93, "l": 58 },
+        "type": "color",
+        "description": "Warning color - base"
+      },
+      "600": {
+        "value": { "h": 32, "s": 95, "l": 44 },
+        "type": "color",
+        "description": "Warning color - medium dark"
+      },
+      "900": {
+        "value": { "h": 20, "s": 91, "l": 20 },
+        "type": "color",
+        "description": "Warning color - darkest"
+      }
+    },
+    "error": {
+      "50": {
+        "value": { "h": 0, "s": 86, "l": 97 },
+        "type": "color",
+        "description": "Error color - lightest"
+      },
+      "500": {
+        "value": { "h": 0, "s": 84, "l": 60 },
+        "type": "color",
+        "description": "Error color - base"
+      },
+      "600": {
+        "value": { "h": 0, "s": 72, "l": 51 },
+        "type": "color",
+        "description": "Error color - medium dark"
+      },
+      "900": {
+        "value": { "h": 0, "s": 63, "l": 31 },
+        "type": "color",
+        "description": "Error color - darkest"
+      }
+    },
+    "info": {
+      "50": {
+        "value": { "h": 204, "s": 94, "l": 94 },
+        "type": "color",
+        "description": "Info color - lightest"
+      },
+      "500": {
+        "value": { "h": 199, "s": 89, "l": 48 },
+        "type": "color",
+        "description": "Info color - base"
+      },
+      "600": {
+        "value": { "h": 200, "s": 98, "l": 39 },
+        "type": "color",
+        "description": "Info color - medium dark"
+      },
+      "900": {
+        "value": { "h": 202, "s": 83, "l": 17 },
+        "type": "color",
+        "description": "Info color - darkest"
+      }
+    }
+  }
+}
