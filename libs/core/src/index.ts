@@ -17,6 +17,9 @@ export * from './lib/dna-migration';
 export * from './lib/framework-modules';
 export * from './lib/template-generation-pipeline';
 
+// AI Integration Framework
+export * from './lib/ai';
+
 // Re-export framework-specific base classes for convenience
 export {
   FlutterDNAModule,
