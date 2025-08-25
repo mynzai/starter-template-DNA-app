@@ -55,7 +55,6 @@ async function main(): Promise<void> {
         
         if (opts['debug']) {
           logger.debug('Debug mode enabled');
-          logger.debug('Environment:', environment);
         }
       });
 
@@ -111,14 +110,12 @@ ${chalk.bold('Examples:')}
 
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (reason, promise) => {
-  logger.error('Unhandled Rejection at:', promise, 'reason:', reason);
-  handleError(new Error(`Unhandled promise rejection: ${reason}`));
+  handleError(new Error(`Unexpected error occurred: ${reason}`));
   process.exit(1);
 });
 
 // Handle uncaught exceptions
 process.on('uncaughtException', (error) => {
-  logger.error('Uncaught Exception:', error);
   handleError(error);
   process.exit(1);
 });

@@ -24,13 +24,21 @@ class Logger {
   }
 
   private formatMessage(level: LogLevel, message: string, ...args: unknown[]): string {
-    const timestamp = new Date().toISOString();
-    const prefix = `[${timestamp}] [${level.toUpperCase()}]`;
+    // Clean production logging - no timestamps in normal operation
+    if (level === 'info' || level === 'warn') {
+      const formattedArgs = args.length > 0 ? ' ' + args.map(arg => 
+        typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+      ).join(' ') : '';
+      return `${message}${formattedArgs}`;
+    }
+    
+    // Debug and error logs include level prefix for troubleshooting
+    const prefix = level === 'debug' ? '[DEBUG]' : level === 'error' ? '[ERROR]' : '';
     const formattedArgs = args.length > 0 ? ' ' + args.map(arg => 
       typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
     ).join(' ') : '';
     
-    return `${prefix} ${message}${formattedArgs}`;
+    return prefix ? `${prefix} ${message}${formattedArgs}` : `${message}${formattedArgs}`;
   }
 
   debug(message: string, ...args: unknown[]): void {
