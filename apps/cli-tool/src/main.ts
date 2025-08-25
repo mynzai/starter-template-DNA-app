@@ -12,10 +12,7 @@ import { createCommand } from './commands/create';
 import { listCommand } from './commands/list';
 import { validateCommand } from './commands/validate';
 import { updateCommand } from './commands/update';
-import { testCommand } from './commands/test';
-import { trackCommand } from './commands/track';
-import { gitCommand } from './commands/git';
-import { qualityValidationCommand } from './commands/quality-validation';
+// Removed unused commands for opensource version
 import { environment } from './environments/environment';
 import { logger } from './utils/logger';
 import { handleError } from './utils/error-handler';
@@ -67,10 +64,6 @@ async function main(): Promise<void> {
     program.addCommand(listCommand);
     program.addCommand(validateCommand);
     program.addCommand(updateCommand);
-    program.addCommand(testCommand);
-    program.addCommand(trackCommand);
-    program.addCommand(gitCommand);
-    program.addCommand(qualityValidationCommand);
 
     // Show help when no command is provided
     if (process.argv.length <= 2) {
@@ -98,15 +91,14 @@ ${chalk.gray('Create production-ready projects in under 10 minutes')}
 ${chalk.bold('Quick Start:')}
   ${chalk.cyan('dna-cli create')}          ${chalk.gray('# Interactive template creation')}
   ${chalk.cyan('dna-cli list')}            ${chalk.gray('# Browse available templates')}
-  ${chalk.cyan('dna-cli test')}            ${chalk.gray('# Run comprehensive tests')}
-  ${chalk.cyan('dna-cli quality')}         ${chalk.gray('# Automated quality validation')}
+  ${chalk.cyan('dna-cli validate')}        ${chalk.gray('# Validate template structure')}
   ${chalk.cyan('dna-cli create --help')}   ${chalk.gray('# Get detailed help')}
 
 ${chalk.bold('Examples:')}
-  ${chalk.cyan('dna-cli create my-app --template ai-saas --framework nextjs')}
+  ${chalk.cyan('dna-cli create my-app --template ai-saas-nextjs')}
   ${chalk.cyan('dna-cli create mobile-app --template flutter-universal')}
-  ${chalk.cyan('dna-cli test --framework nextjs --types unit integration e2e')}
-  ${chalk.cyan('dna-cli list --framework react-native --category ai')}
+  ${chalk.cyan('dna-cli list --category ai')}
+  ${chalk.cyan('dna-cli validate my-project')}
 `;
 
   console.log(boxen(welcome, {
