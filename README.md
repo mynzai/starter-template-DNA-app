@@ -57,6 +57,291 @@ cd my-app
 npm run dev
 ```
 
+## ⚡ CLI Capabilities & Commands
+
+The DNA Template CLI is a **revolutionary development tool** that transforms how you build software. Unlike traditional generators that create basic boilerplate, the DNA CLI provides:
+
+### 🌟 Unique Value Proposition
+
+- **🔮 AI-Native Architecture**: First-class support for multi-LLM applications with cost tracking, rate limiting, and streaming
+- **🧬 DNA Module System**: Composable, conflict-free modules that automatically resolve dependencies 
+- **📊 Built-in Quality Gates**: Comprehensive testing, security scanning, and performance validation
+- **🔄 Session Management**: Track development progress with automated Git workflows
+- **⚡ Production-Ready**: Templates include monitoring, deployment configs, and enterprise features
+- **🎯 Zero Technical Debt**: Automated debt detection and prevention mechanisms
+
+### 💼 Professional Use Cases
+
+#### **Enterprise Development Teams**
+- Standardize project structures across teams
+- Enforce quality gates and coding standards
+- Track development velocity and technical debt
+- Automate compliance and security requirements
+
+#### **AI/ML Product Development** 
+- Multi-LLM integration with cost optimization
+- Vector database setup for RAG applications  
+- Real-time streaming and WebSocket management
+- Model performance monitoring and safety checks
+
+#### **Startup & Scale-up Development**
+- Rapid MVP development with production foundations
+- Payment integration (Stripe) with subscription management
+- Authentication systems with OAuth and JWT
+- Performance optimization from day one
+
+#### **Cross-Platform Product Teams**
+- Single codebase for web, mobile, and desktop
+- Platform-specific optimizations and testing
+- Consistent UI/UX across all platforms
+- Deployment automation for multiple targets
+
+### 🚀 CLI Command Overview
+
+The DNA Template CLI is a powerful tool with extensive capabilities for professional development workflows:
+
+### 🎯 Core Commands
+
+#### `dna create` - Project Generation
+```bash
+# Interactive creation
+dna create
+
+# Specify template and options
+dna create my-app --template=ai-saas-nextjs --modules=auth-jwt,payments-stripe
+
+# Advanced options
+dna create my-app \
+  --template=flutter-universal \
+  --framework=flutter \
+  --output=/path/to/projects \
+  --package-manager=yarn \
+  --dna=auth-oauth,database-postgres,real-time-websocket \
+  --skip-install \
+  --dry-run
+```
+
+**Options:**
+- `--template, -t` - Specify template name
+- `--framework, -f` - Target framework 
+- `--output, -o` - Output directory
+- `--dna, -d` - DNA modules (comma-separated)
+- `--package-manager, -p` - npm, yarn, pnpm, bun
+- `--skip-install` - Skip dependency installation
+- `--skip-git` - Skip git initialization
+- `--dry-run` - Preview without creating files
+- `--overwrite` - Overwrite existing files
+- `--yes, -y` - Use defaults, skip prompts
+
+#### `dna list` - Template & Module Discovery
+```bash
+# Browse all templates
+dna list
+
+# Filter by category
+dna list --category=ai-native
+dna list --category=performance
+dna list --category=cross-platform
+
+# Show DNA modules
+dna list --modules
+dna list --modules --category=authentication
+
+# Advanced filtering
+dna list --framework=nextjs --complexity=advanced
+dna list --rating=4+ --setup-time=10
+```
+
+**Categories:** `ai-native`, `performance`, `cross-platform`, `foundation`
+**Frameworks:** `nextjs`, `flutter`, `react-native`, `tauri`, `sveltekit`, `rust`
+
+#### `dna add` - Module Integration
+```bash
+# Add DNA modules to existing project
+dna add auth-jwt payments-stripe
+dna add --interactive
+dna add vector-db --configure
+
+# Add with automatic dependency resolution
+dna add ai-openai --resolve-conflicts
+```
+
+#### `dna validate` - Quality Assurance
+```bash
+# Validate project structure
+dna validate
+dna validate /path/to/project
+
+# Validate with specific rules
+dna validate --strict
+dna validate --rules=security,performance,accessibility
+```
+
+### 🔧 Advanced Commands
+
+#### `dna test` - Comprehensive Testing
+```bash
+# Run all tests with quality gates
+dna test --quality-gates
+
+# Framework-specific testing
+dna test --framework=nextjs --coverage=85
+dna test --framework=flutter --golden-files
+
+# Stress testing
+dna test --stress --concurrent-users=1000
+dna test --load --duration=60s
+```
+
+**Features:**
+- Unit, integration, and E2E testing
+- Performance benchmarking
+- Accessibility compliance testing
+- Security vulnerability scanning
+- Cross-platform compatibility testing
+
+#### `dna track` - Development Session Management
+```bash
+# Start tracking session
+dna track start --epic=user-auth --story=login-system
+dna track start --type=feature --notes="Implementing OAuth"
+
+# Update progress
+dna track progress --files-modified=5 --tests-added=12 --coverage=89
+dna track progress --quality-gates-status=passed --notes="All tests passing"
+
+# End session
+dna track end --status=completed --quality-gates-status=passed
+dna track status  # View current session
+
+# Generate reports
+dna track report --format=md --output=session-report.md
+```
+
+**Session Types:** `feature`, `bugfix`, `refactor`, `testing`, `verification`
+**Tracking Metrics:** Files modified, tests added/fixed, coverage, quality gates
+
+#### `dna quality` - Quality Validation & Scoring
+```bash
+# Run comprehensive quality checks
+dna quality check --threshold=85
+dna quality check --framework=nextjs --fail-on-quality-gate-failure
+
+# Get quality score
+dna quality score --detailed
+dna quality score --framework=flutter --output=quality-report.json
+
+# Performance analysis
+dna quality benchmark --baseline=/path/to/baseline
+```
+
+**Quality Gates:**
+- Code coverage (≥80%)
+- Security vulnerabilities (0 critical)
+- Performance benchmarks
+- Accessibility compliance
+- Code complexity analysis
+- Dependency security audit
+
+#### `dna git` - Git Automation
+```bash
+# Configure automated Git workflows
+dna git config --auto-commit --conventional-commits
+dna git config --push-remote=false --require-tests
+
+# Automated operations
+dna git commit --type=feat --message="Add authentication system"
+dna git branch --epic=epic-2 --story=story-1
+dna git auto-commit --progress-based
+
+# Status and management
+dna git status
+dna git rollback --to-checkpoint
+```
+
+**Features:**
+- Conventional commit enforcement
+- Automatic branch creation from epics/stories
+- Progress-based commits
+- Pre-commit hooks with quality gates
+- Rollback and recovery systems
+
+### 🚀 Power User Workflows
+
+#### Enterprise Development Workflow
+```bash
+# 1. Start a new feature with full tracking
+dna track start --epic=payment-system --story=stripe-integration --type=feature
+
+# 2. Create project with comprehensive setup
+dna create payment-service \
+  --template=high-performance-api \
+  --modules=payments-stripe,database-postgres,auth-jwt \
+  --framework=rust \
+  --quality-gates
+
+# 3. Continuous validation during development
+dna quality check --threshold=90 --framework=rust
+dna test --framework=rust --coverage=95
+
+# 4. Git automation with quality enforcement
+dna git config --auto-commit --require-tests --quality-threshold=85
+dna track progress --files-modified=8 --coverage=93
+
+# 5. Complete with comprehensive reporting
+dna track end --status=completed --quality-gates-status=passed
+dna track report --format=json --include-metrics
+```
+
+#### AI-Native Development Pipeline
+```bash
+# Multi-LLM AI application with full observability
+dna create ai-platform \
+  --template=ai-saas-nextjs \
+  --modules=ai-openai,ai-anthropic,ai-ollama,vector-db,real-time-websocket \
+  --package-manager=bun
+
+# Advanced validation for AI systems
+dna quality check --ai-specific --model-safety --bias-detection
+dna test --ai-load-testing --token-usage-limits --cost-tracking
+```
+
+#### Cross-Platform Deployment
+```bash
+# Universal application with platform optimization
+dna create universal-app \
+  --template=flutter-universal \
+  --modules=auth-oauth,database-postgres,real-time-webrtc
+
+# Platform-specific testing and validation
+dna test --platforms=web,android,ios,macos,windows,linux
+dna quality check --platform-compliance --accessibility=wcag-aa
+```
+
+### 🔍 Discovery & Compatibility
+
+#### Template Compatibility Analysis
+```bash
+# Check module compatibility
+dna compatibility check --modules=auth-jwt,payments-stripe,ai-openai
+dna compatibility matrix --framework=nextjs
+
+# Ecosystem updates and migration planning
+dna ecosystem update --analyze-breaking-changes
+dna ecosystem update --migration-path=v2.0.0
+```
+
+#### Advanced Filtering & Search
+```bash
+# Complex template discovery
+dna list --ai-enabled --performance-rating=5 --setup-time="<15min"
+dna list --modules-compatible=auth-oauth --framework=nextjs,flutter
+
+# Module ecosystem exploration
+dna list --modules --provider=stripe --category=payments
+dna list --modules --dependencies=database-postgres
+```
+
 ## 📦 Available Templates
 
 ### 🤖 AI-Native Applications
