@@ -1,0 +1,70 @@
+{
+  "id": "tauri-realtime-collaboration",
+  "name": "Real-time Collaboration Platform",
+  "description": "High-performance real-time collaboration platform with operational transformation, WebRTC, and <150ms latency targeting concurrent document editing",
+  "type": "real-time-collaboration",
+  "framework": "tauri",
+  "version": "1.0.0",
+  "author": "Starter Template DNA Team",
+  "tags": ["tauri", "desktop", "real-time", "collaboration", "webrtc", "operational-transformation", "performance", "rust", "react"],
+  "dnaModules": [
+    "real-time-webrtc",
+    "operational-transformation", 
+    "presence-system",
+    "performance-monitoring",
+    "quality-framework"
+  ],
+  "requirements": {
+    "node": ">=18.0.0",
+    "rust": ">=1.75.0",
+    "frameworks": ["Tauri 2.0+", "React 18+", "WebRTC APIs"]
+  },
+  "features": [
+    "WebRTC peer-to-peer connections with <150ms latency",
+    "Operational transformation for concurrent document editing",
+    "Real-time synchronization with conflict resolution",
+    "Presence awareness and cursor tracking",
+    "Performance monitoring and optimization tools",
+    "Cross-platform desktop application (Windows, macOS, Linux)",
+    "TypeScript + Rust hybrid architecture",
+    "Comprehensive testing suite with quality gates",
+    "Memory efficient (<100MB per client)",
+    "High throughput (1000+ operations/second)"
+  ],
+  "performance": {
+    "latency": "<150ms",
+    "throughput": "1000+ ops/sec",
+    "memory": "<100MB per client",
+    "connection_time": "<3s",
+    "setup_time": "<10 minutes"
+  },
+  "complexity": "advanced",
+  "estimatedSetupTime": 10,
+  "lastUpdated": "2025-01-15T00:00:00Z",
+  "variables": [
+    {
+      "name": "projectName",
+      "description": "Name of your collaboration platform",
+      "required": true,
+      "default": "CollabPlatform"
+    },
+    {
+      "name": "appIdentifier", 
+      "description": "App identifier (e.g., com.company.collab)",
+      "required": true,
+      "default": "com.example.collab"
+    },
+    {
+      "name": "signalingServer",
+      "description": "WebRTC signaling server URL",
+      "required": false,
+      "default": "ws://localhost:8080"
+    },
+    {
+      "name": "maxPeers",
+      "description": "Maximum number of concurrent peers",
+      "required": false,
+      "default": "50"
+    }
+  ]
+}

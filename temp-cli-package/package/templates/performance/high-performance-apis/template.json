@@ -1,0 +1,94 @@
+{
+  "id": "axum-high-performance-api",
+  "name": "High-Performance API Platform",
+  "description": "Axum-based high-performance API platform capable of 48k+ requests/second with comprehensive monitoring, load balancing, and auto-scaling",
+  "type": "high-performance-api",
+  "framework": "axum",
+  "version": "1.0.0",
+  "author": "Starter Template DNA Team",
+  "tags": ["axum", "rust", "api", "performance", "graphql", "rest", "monitoring", "scaling"],
+  "dnaModules": [
+    "high-performance-axum",
+    "load-balancing",
+    "api-monitoring",
+    "graphql-generation",
+    "client-libraries",
+    "quality-framework"
+  ],
+  "requirements": {
+    "rust": ">=1.75.0",
+    "node": ">=18.0.0",
+    "docker": ">=20.0.0",
+    "frameworks": ["Axum 0.7+", "GraphQL", "Redis", "PostgreSQL"]
+  },
+  "features": [
+    "48k+ requests/second performance",
+    "Axum web framework with async request handling",
+    "Connection pooling and database optimization",
+    "Load balancing with health checks",
+    "Auto-scaling based on metrics",
+    "Comprehensive API monitoring and analytics",
+    "Rate limiting with Redis backend",
+    "GraphQL and REST endpoint generation",
+    "Automated OpenAPI documentation",
+    "Client libraries for React Native and Flutter",
+    "Prometheus metrics integration",
+    "Grafana monitoring dashboard",
+    "Kubernetes deployment with HPA"
+  ],
+  "performance": {
+    "requests_per_second": "48000+",
+    "response_time": "<50ms",
+    "memory_usage": "<512MB",
+    "cpu_usage": "<80%"
+  },
+  "complexity": "advanced",
+  "estimatedSetupTime": 15,
+  "lastUpdated": "2025-01-15T00:00:00Z",
+  "implementationStatus": "production-ready",
+  "setupRequired": {
+    "level": "minimal",
+    "requirements": ["Docker setup", "Database configuration"],
+    "estimatedConfigTime": 15
+  },
+  "readinessLevel": 95,
+  "variables": [
+    {
+      "name": "projectName",
+      "description": "Name of your API platform",
+      "required": true,
+      "default": "HighPerformanceAPI"
+    },
+    {
+      "name": "databaseUrl",
+      "description": "PostgreSQL database connection URL",
+      "required": true,
+      "default": "postgresql://user:password@localhost:5432/api_db"
+    },
+    {
+      "name": "redisUrl",
+      "description": "Redis connection URL for rate limiting",
+      "required": true,
+      "default": "redis://localhost:6379"
+    },
+    {
+      "name": "maxConnections",
+      "description": "Maximum database connections in pool",
+      "required": false,
+      "default": "100"
+    },
+    {
+      "name": "rateLimitRps",
+      "description": "Rate limit requests per second per client",
+      "required": false,
+      "default": "1000"
+    }
+  ],
+  "infrastructure": {
+    "containers": ["api", "postgres", "redis", "prometheus", "grafana"],
+    "loadBalancer": "nginx",
+    "orchestration": "kubernetes",
+    "monitoring": ["prometheus", "grafana", "jaeger"],
+    "scaling": "horizontal-pod-autoscaler"
+  }
+}

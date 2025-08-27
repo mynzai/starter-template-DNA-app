@@ -1,0 +1,32 @@
+{
+  "id": "react-native-web-hybrid",
+  "name": "React Native Web Hybrid",
+  "description": "Unified codebase for native mobile and web. Share 95% of code between React Native mobile apps and Next.js web app.",
+  "type": "cross-platform",
+  "framework": "react-native",
+  "version": "1.0.0",
+  "author": "DNA Templates",
+  "tags": ["react-native", "react-native-web", "nextjs", "monorepo", "hybrid", "cross-platform"],
+  "dnaModules": ["shared-components", "platform-routing", "responsive-ui", "state-management"],
+  "requirements": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "features": [
+    "95% code sharing",
+    "Monorepo with Nx",
+    "Shared component library",
+    "Platform-specific routing",
+    "Responsive design system",
+    "Unified state management",
+    "TypeScript throughout",
+    "Shared business logic",
+    "Platform-specific optimizations",
+    "E2E testing for all platforms"
+  ],
+  "complexity": "advanced",
+  "estimatedSetupTime": 8,
+  "lastUpdated": "2024-12-06T00:00:00Z",
+  "downloadCount": 540,
+  "rating": 4.5
+}

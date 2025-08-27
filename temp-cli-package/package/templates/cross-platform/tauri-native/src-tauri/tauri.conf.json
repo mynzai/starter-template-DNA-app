@@ -1,0 +1,155 @@
+{
+  "$schema": "https://schema.tauri.app/config/2.0.0",
+  "productName": "Tauri Native Platform",
+  "version": "1.0.0",
+  "identifier": "com.starter-template-dna.tauri-native",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "beforeBuildCommand": "npm run build",
+    "devUrl": "http://localhost:1420",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "Tauri Native Platform",
+        "width": 1200,
+        "height": 800,
+        "minWidth": 800,
+        "minHeight": 600,
+        "resizable": true,
+        "maximizable": true,
+        "minimizable": true,
+        "closable": true,
+        "center": true,
+        "decorations": true,
+        "alwaysOnTop": false,
+        "shadow": true,
+        "transparent": false,
+        "titleBarStyle": "Visible",
+        "theme": "Auto"
+      }
+    ],
+    "security": {
+      "csp": {
+        "default-src": "'self' tauri:",
+        "img-src": "'self' asset: https: tauri:",
+        "script-src": "'self' 'unsafe-inline'",
+        "style-src": "'self' 'unsafe-inline'",
+        "font-src": "'self' data:",
+        "connect-src": "ipc: http://ipc.localhost"
+      },
+      "dangerousDisableAssetCspModification": false,
+      "freezePrototype": true,
+      "dangerousRemoteDomainIpcAccess": []
+    },
+    "trayIcon": {
+      "iconPath": "icons/icon.png",
+      "iconAsTemplate": true,
+      "menuOnLeftClick": false,
+      "tooltip": "Tauri Native Platform"
+    },
+    "macOSPrivateApi": true
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "identifier": "com.starter-template-dna.tauri-native",
+    "publisher": "Starter Template DNA",
+    "category": "Productivity",
+    "shortDescription": "Performance-focused desktop application",
+    "longDescription": "A high-performance, secure desktop application built with Tauri 2.0, featuring native API access and cross-platform compatibility.",
+    "resources": [],
+    "copyright": "Copyright © 2024 Starter Template DNA",
+    "licenseFile": "../LICENSE",
+    "externalBin": [],
+    "windows": {
+      "certificateThumbprint": null,
+      "digestAlgorithm": "sha256",
+      "timestampUrl": "",
+      "tsp": false,
+      "wix": {
+        "language": ["en-US"],
+        "template": "main.wxs"
+      },
+      "nsis": {
+        "template": "installer.nsi",
+        "languages": ["English"],
+        "customLanguageFiles": {},
+        "displayLanguageSelector": false
+      }
+    },
+    "macOS": {
+      "frameworks": [],
+      "minimumSystemVersion": "10.13",
+      "exceptionDomain": "",
+      "signingIdentity": null,
+      "providerShortName": null,
+      "entitlements": null
+    },
+    "linux": {
+      "deb": {
+        "depends": [],
+        "priority": "optional",
+        "section": "utils"
+      },
+      "appimage": {
+        "bundleMediaFramework": false,
+        "libs": []
+      }
+    }
+  },
+  "plugins": {
+    "fs": {
+      "all": false,
+      "copyFile": true,
+      "create": true,
+      "exists": true,
+      "mkdir": true,
+      "readDir": true,
+      "readFile": true,
+      "remove": true,
+      "rename": true,
+      "stat": true,
+      "truncate": true,
+      "writeFile": true,
+      "scope": ["$APPDATA/**", "$DOCUMENT/**", "$DOWNLOAD/**", "$DESKTOP/**"]
+    },
+    "shell": {
+      "all": false,
+      "execute": false,
+      "sidecar": false,
+      "open": true
+    },
+    "dialog": {
+      "all": false,
+      "ask": true,
+      "confirm": true,
+      "message": true,
+      "open": true,
+      "save": true
+    },
+    "notification": {
+      "all": true
+    },
+    "updater": {
+      "active": true,
+      "endpoints": [
+        "https://releases.myapp.com/{{target}}/{{arch}}/{{current_version}}"
+      ],
+      "dialog": true,
+      "pubkey": ""
+    },
+    "window-state": {
+      "filename": "window-state.json"
+    }
+  }
+}

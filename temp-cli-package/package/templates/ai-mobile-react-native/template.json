@@ -1,0 +1,33 @@
+{
+  "id": "ai-mobile-react-native",
+  "name": "AI Mobile React Native",
+  "description": "AI-powered mobile application with React Native. Features voice commands, camera integration, and real-time AI chat with Redux state management.",
+  "type": "ai-mobile",
+  "framework": "react-native",
+  "version": "1.0.0",
+  "author": "DNA Templates",
+  "tags": ["ai", "mobile", "react-native", "typescript", "cross-platform", "voice", "camera"],
+  "dnaModules": ["ai-openai", "ai-anthropic", "mobile-native", "push-notifications", "state-redux"],
+  "requirements": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0",
+    "react-native": ">=0.72.0"
+  },
+  "features": [
+    "Voice command interface",
+    "Camera integration with AI analysis",
+    "Real-time chat with streaming responses",
+    "Redux state management",
+    "React Navigation",
+    "Push notifications",
+    "Cross-platform (iOS/Android)",
+    "TypeScript support",
+    "Jest testing setup",
+    "Detox E2E testing"
+  ],
+  "complexity": "intermediate",
+  "estimatedSetupTime": 6,
+  "lastUpdated": "2024-12-06T00:00:00Z",
+  "downloadCount": 920,
+  "rating": 4.6
+}

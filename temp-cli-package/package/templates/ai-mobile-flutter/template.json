@@ -1,0 +1,31 @@
+{
+  "id": "ai-mobile-flutter",
+  "name": "AI Mobile Flutter",
+  "description": "AI-powered mobile application with Flutter. Features voice commands, camera integration, offline AI, and real-time chat capabilities.",
+  "type": "ai-mobile",
+  "framework": "flutter",
+  "version": "1.0.0",
+  "author": "DNA Templates",
+  "tags": ["ai", "mobile", "flutter", "dart", "cross-platform", "voice", "camera"],
+  "dnaModules": ["ai-openai", "ai-anthropic", "mobile-native", "push-notifications", "offline-ai"],
+  "requirements": {
+    "flutter": ">=3.0.0",
+    "dart": ">=3.0.0"
+  },
+  "features": [
+    "Voice command interface",
+    "Camera integration with AI analysis",
+    "Offline AI capabilities",
+    "Real-time chat with streaming responses",
+    "Push notifications",
+    "Cross-platform (iOS/Android)",
+    "Material Design 3",
+    "State management with Provider/Riverpod",
+    "Comprehensive test suite"
+  ],
+  "complexity": "intermediate",
+  "estimatedSetupTime": 5,
+  "lastUpdated": "2024-12-06T00:00:00Z",
+  "downloadCount": 850,
+  "rating": 4.7
+}

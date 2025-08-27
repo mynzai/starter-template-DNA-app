@@ -3,8 +3,11 @@
 🚀 **Open Source AI-Native Template Generation Ecosystem**
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
+[![npm version](https://img.shields.io/npm/v/dna-template-cli.svg)](https://www.npmjs.com/package/dna-template-cli)
+[![npm downloads](https://img.shields.io/npm/dm/dna-template-cli.svg)](https://www.npmjs.com/package/dna-template-cli)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue)](https://www.typescriptlang.org/)
 [![Node](https://img.shields.io/badge/Node-20.x-green)](https://nodejs.org/)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/mynzai/starter-template-DNA-app/pulls)
 
 > Transform your development workflow with production-ready AI-native templates that reduce setup time from 40-80 hours to under 10 minutes.
 

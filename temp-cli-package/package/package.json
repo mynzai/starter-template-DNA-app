@@ -1,0 +1,53 @@
+{
+  "name": "dna-template-cli",
+  "version": "0.3.34",
+  "description": "DNA Template CLI - AI-native template generation ecosystem",
+  "main": "./src/main.js",
+  "bin": {
+    "dna-cli": "./src/main.js",
+    "dna": "./src/main.js"
+  },
+  "type": "commonjs",
+  "dependencies": {
+    "commander": "^10.0.1",
+    "fs-extra": "^11.1.1",
+    "semver": "^7.5.4",
+    "tslib": "^2.3.0",
+    "chalk": "4.1.2",
+    "boxen": "5.1.2",
+    "inquirer": "8.2.6",
+    "ora": "5.4.1",
+    "update-notifier": "6.0.2",
+    "fuse.js": "^6.6.2",
+    "handlebars": "^4.7.8",
+    "zod": "^3.22.4"
+  },
+  "files": [
+    "src/**/*",
+    "templates/**/*",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "keywords": [
+    "dna",
+    "template",
+    "cli",
+    "tracking",
+    "quality",
+    "testing",
+    "git-automation"
+  ],
+  "homepage": "https://github.com/mynzai/starter-template-DNA-app#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mynzai/starter-template-DNA-app.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mynzai/starter-template-DNA-app/issues"
+  },
+  "author": "Mynza Labs",
+  "license": "MIT",
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

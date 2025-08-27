@@ -1,0 +1,31 @@
+{
+  "id": "basic-rust",
+  "name": "Basic Rust Foundation",
+  "description": "Foundation template for Rust applications. Includes project structure, testing setup, and common dependencies.",
+  "type": "foundation",
+  "framework": "rust",
+  "version": "1.0.0",
+  "author": "DNA Templates",
+  "tags": ["rust", "foundation", "starter", "cli", "backend"],
+  "dnaModules": ["testing-framework", "error-handling", "logging"],
+  "requirements": {
+    "rust": ">=1.70.0",
+    "cargo": ">=1.70.0"
+  },
+  "features": [
+    "Modern Rust project structure",
+    "Cargo workspace setup",
+    "Error handling with anyhow/thiserror",
+    "Logging with tracing",
+    "Testing framework",
+    "Benchmark setup",
+    "Documentation templates",
+    "CI/CD workflows",
+    "Clippy and rustfmt configs"
+  ],
+  "complexity": "beginner",
+  "estimatedSetupTime": 3,
+  "lastUpdated": "2024-12-06T00:00:00Z",
+  "downloadCount": 560,
+  "rating": 4.5
+}

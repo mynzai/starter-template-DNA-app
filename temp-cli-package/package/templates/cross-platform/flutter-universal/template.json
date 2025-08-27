@@ -1,0 +1,39 @@
+{
+  "id": "flutter-universal",
+  "name": "Flutter Universal",
+  "description": "Single codebase for web, mobile, and desktop. Adaptive UI components that adjust to each platform's design language.",
+  "type": "cross-platform",
+  "framework": "flutter",
+  "version": "1.0.0",
+  "author": "DNA Templates",
+  "tags": ["flutter", "cross-platform", "universal", "web", "mobile", "desktop", "adaptive-ui"],
+  "dnaModules": ["platform-adaptive", "responsive-ui", "state-management"],
+  "requirements": {
+    "flutter": ">=3.0.0",
+    "dart": ">=3.0.0"
+  },
+  "features": [
+    "Single codebase for all platforms",
+    "Adaptive UI components",
+    "Platform-specific navigation",
+    "Responsive layouts",
+    "Material Design 3 & Cupertino",
+    "Desktop window management",
+    "Web PWA support",
+    "Platform detection utilities",
+    "Golden tests for UI",
+    "Integration testing"
+  ],
+  "complexity": "intermediate",
+  "estimatedSetupTime": 5,
+  "lastUpdated": "2024-12-06T00:00:00Z",
+  "downloadCount": 1120,
+  "rating": 4.8,
+  "implementationStatus": "needs-setup",
+  "setupRequired": {
+    "level": "configuration",
+    "requirements": ["Flutter SDK setup", "Platform configuration", "Device/emulator setup"],
+    "estimatedConfigTime": 20
+  },
+  "readinessLevel": 70
+}

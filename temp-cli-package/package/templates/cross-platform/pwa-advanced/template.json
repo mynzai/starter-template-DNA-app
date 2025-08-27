@@ -1,0 +1,33 @@
+{
+  "id": "pwa-advanced",
+  "name": "Advanced PWA",
+  "description": "Progressive Web App with offline-first architecture. Features intelligent caching, background sync, and native app capabilities.",
+  "type": "cross-platform",
+  "framework": "nextjs",
+  "version": "1.0.0",
+  "author": "DNA Templates",
+  "tags": ["pwa", "nextjs", "offline", "service-worker", "web", "mobile-web"],
+  "dnaModules": ["pwa-capabilities", "offline-sync", "push-notifications", "cache-strategies"],
+  "requirements": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "features": [
+    "Offline-first architecture",
+    "Intelligent cache strategies",
+    "Background sync",
+    "Push notifications",
+    "Install prompts",
+    "App shortcuts",
+    "File system access",
+    "Share target API",
+    "Workbox integration",
+    "Performance monitoring",
+    "Lighthouse 100 scores"
+  ],
+  "complexity": "intermediate",
+  "estimatedSetupTime": 5,
+  "lastUpdated": "2024-12-06T00:00:00Z",
+  "downloadCount": 760,
+  "rating": 4.6
+}

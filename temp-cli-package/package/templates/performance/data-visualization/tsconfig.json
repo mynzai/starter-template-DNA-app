@@ -1,0 +1,58 @@
+{
+	"extends": "./.svelte-kit/tsconfig.json",
+	"compilerOptions": {
+		"allowJs": true,
+		"checkJs": true,
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"resolveJsonModule": true,
+		"skipLibCheck": true,
+		"sourceMap": true,
+		"strict": true,
+		"moduleResolution": "node",
+		"target": "ES2022",
+		"module": "ESNext",
+		"lib": ["ES2022", "DOM", "DOM.Iterable", "WebGL", "WebGL2"],
+		"allowSyntheticDefaultImports": true,
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true,
+		"useDefineForClassFields": false,
+		"verbatimModuleSyntax": false,
+		"isolatedModules": true,
+		"noEmit": true,
+		"types": [
+			"vite/client",
+			"vitest/globals",
+			"@types/d3",
+			"@types/three",
+			"@types/lodash-es"
+		],
+		"paths": {
+			"$lib": ["./src/lib"],
+			"$lib/*": ["./src/lib/*"],
+			"$components": ["./src/components"],
+			"$components/*": ["./src/components/*"],
+			"$stores": ["./src/stores"],
+			"$stores/*": ["./src/stores/*"],
+			"$utils": ["./src/utils"],
+			"$utils/*": ["./src/utils/*"],
+			"$types": ["./src/types"],
+			"$types/*": ["./src/types/*"]
+		}
+	},
+	"include": [
+		"src/**/*.d.ts",
+		"src/**/*.ts",
+		"src/**/*.js",
+		"src/**/*.svelte",
+		"tests/**/*.ts",
+		"tests/**/*.js"
+	],
+	"exclude": [
+		"node_modules",
+		"build",
+		"dist",
+		".svelte-kit",
+		"src-tauri"
+	]
+}

@@ -1,0 +1,35 @@
+{
+  "id": "foundation-patterns",
+  "name": "Foundation Patterns",
+  "description": "Production-ready cross-platform template built with Next.js.",
+  "type": "foundation",
+  "framework": "nextjs",
+  "version": "1.0.0",
+  "author": "DNA Templates",
+  "tags": ["cross-platform", "foundation", "patterns", "nextjs", "typescript"],
+  "dnaModules": ["platform-adaptive", "shared-abstractions", "cross-platform-testing"],
+  "requirements": {
+    "node": ">=18.0.0",
+    "frameworks": ["Next.js 14+"]
+  },
+  "features": [
+    "Cross-platform abstractions",
+    "Shared state management",
+    "Platform-specific implementations",
+    "Adaptive UI components",
+    "Comprehensive testing patterns",
+    "TypeScript support"
+  ],
+  "complexity": "intermediate",
+  "estimatedSetupTime": 5,
+  "lastUpdated": "2024-12-06T00:00:00Z",
+  "downloadCount": 420,
+  "rating": 4.5,
+  "implementationStatus": "needs-setup",
+  "setupRequired": {
+    "level": "configuration",
+    "requirements": ["Platform-specific configuration", "Build setup"],
+    "estimatedConfigTime": 30
+  },
+  "readinessLevel": 70
+}

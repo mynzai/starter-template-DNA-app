@@ -1,0 +1,33 @@
+{
+  "id": "electron-modern",
+  "name": "Modern Electron Desktop",
+  "description": "Enterprise-grade desktop application with Electron. Features auto-updates, code signing, and comprehensive security configurations.",
+  "type": "cross-platform",
+  "framework": "electron",
+  "version": "1.0.0",
+  "author": "DNA Templates",
+  "tags": ["electron", "desktop", "typescript", "enterprise", "auto-update", "security"],
+  "dnaModules": ["desktop-native", "auto-updater", "file-management", "notifications"],
+  "requirements": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "features": [
+    "Auto-updater with delta updates",
+    "Code signing and notarization",
+    "Context isolation security",
+    "IPC communication patterns",
+    "File manager integration",
+    "Native notifications",
+    "System tray support",
+    "Deep linking",
+    "Crash reporting",
+    "TypeScript throughout",
+    "Playwright E2E tests"
+  ],
+  "complexity": "intermediate",
+  "estimatedSetupTime": 6,
+  "lastUpdated": "2024-12-06T00:00:00Z",
+  "downloadCount": 890,
+  "rating": 4.5
+}

@@ -1,0 +1,34 @@
+{
+  "id": "tauri-native",
+  "name": "Tauri Native Desktop",
+  "description": "High-performance native desktop application with Tauri. 2.5MB bundle size vs 80-120MB Electron, with Rust backend and React frontend.",
+  "type": "cross-platform",
+  "framework": "tauri",
+  "version": "1.0.0",
+  "author": "DNA Templates",
+  "tags": ["tauri", "rust", "desktop", "native", "performance", "react", "typescript"],
+  "dnaModules": ["desktop-native", "system-integration", "file-management", "auto-updater"],
+  "requirements": {
+    "node": ">=18.0.0",
+    "rust": ">=1.70.0",
+    "cargo": ">=1.70.0"
+  },
+  "features": [
+    "2.5MB bundle size",
+    "Native performance with Rust",
+    "System tray integration",
+    "File system access",
+    "Auto-updater",
+    "Code signing setup",
+    "Native notifications",
+    "Secure IPC communication",
+    "React + TypeScript frontend",
+    "Vite build system",
+    "Cross-platform (Windows/Mac/Linux)"
+  ],
+  "complexity": "advanced",
+  "estimatedSetupTime": 8,
+  "lastUpdated": "2024-12-06T00:00:00Z",
+  "downloadCount": 680,
+  "rating": 4.7
+}

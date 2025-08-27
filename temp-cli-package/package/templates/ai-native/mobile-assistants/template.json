@@ -1,0 +1,48 @@
+{
+  "id": "flutter-mobile-assistant",
+  "name": "Flutter Mobile Assistant",
+  "description": "Cross-platform mobile app with AI assistant capabilities",
+  "type": "mobile-assistants",
+  "framework": "flutter",
+  "version": "1.2.0",
+  "author": "DNA Templates",
+  "tags": ["flutter", "mobile", "ai", "assistant", "ios", "android"],
+  "dnaModules": ["auth-biometric", "ai-openai", "real-time-websocket"],
+  "requirements": {
+    "frameworks": ["Flutter 3.16+", "Dart 3.2+"]
+  },
+  "features": [
+    "Cross-platform (iOS, Android)",
+    "Biometric authentication",
+    "Voice input/output",
+    "Offline capabilities",
+    "Material Design 3",
+    "Push notifications",
+    "Chat history management",
+    "Multi-language support",
+    "Adaptive themes",
+    "State management with Riverpod"
+  ],
+  "complexity": "intermediate",
+  "estimatedSetupTime": 6,
+  "lastUpdated": "2024-12-06T00:00:00Z",
+  "downloadCount": 892,
+  "rating": 4.6,
+  "variables": [
+    {
+      "name": "projectName",
+      "description": "Name of your mobile app",
+      "required": true
+    },
+    {
+      "name": "bundleId",
+      "description": "iOS Bundle ID (e.g., com.company.app)",
+      "required": true
+    },
+    {
+      "name": "packageName",
+      "description": "Android Package Name",
+      "required": true
+    }
+  ]
+}

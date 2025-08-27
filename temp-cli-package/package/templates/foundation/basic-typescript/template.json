@@ -1,0 +1,44 @@
+{
+  "id": "nextjs-basic",
+  "name": "Next.js Starter",
+  "description": "Clean Next.js starter with modern tooling and best practices",
+  "type": "foundation",
+  "framework": "nextjs",
+  "version": "1.0.0",
+  "author": "DNA Templates",
+  "tags": ["nextjs", "typescript", "starter", "foundation"],
+  "dnaModules": ["testing-comprehensive"],
+  "requirements": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "features": [
+    "TypeScript configuration",
+    "ESLint + Prettier setup",
+    "Tailwind CSS integration",
+    "Jest testing framework",
+    "Deployment ready",
+    "SEO optimized",
+    "API routes setup",
+    "Environment configuration",
+    "Hot reloading",
+    "Progressive Web App ready"
+  ],
+  "complexity": "beginner",
+  "estimatedSetupTime": 3,
+  "lastUpdated": "2024-12-06T00:00:00Z",
+  "downloadCount": 2150,
+  "rating": 4.9,
+  "variables": [
+    {
+      "name": "projectName",
+      "description": "Name of your project",
+      "required": true
+    },
+    {
+      "name": "description",
+      "description": "Project description",
+      "required": false
+    }
+  ]
+}
