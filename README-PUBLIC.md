@@ -110,21 +110,24 @@ dna compose my-app --dna=config.json
 
 ## 📚 Documentation
 
-- [Getting Started Guide](docs/getting-started.md)
-- [Template Catalog](docs/template-catalog.md)
-- [DNA Module System](docs/dna-modules.md)
-- [API Reference](docs/api-reference.md)
-- [Contributing Guide](CONTRIBUTING.md)
+Full documentation is coming soon! For now:
+
+- **Getting Started**: Use the Quick Start section above
+- **Template Details**: Check individual template README files in `templates/` directory
+- **DNA Module System**: See template examples for usage patterns
+- **API Reference**: Review source code in `libs/core/src/`
+- **Contributing**: Open an issue to discuss your ideas first
 
 ## 🤝 Contributing
 
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details on:
+We welcome contributions! Here's how to get started:
 
-- Code of conduct
-- Development setup
-- Submitting pull requests
-- Adding new templates
-- Creating DNA modules
+1. **Fork the repository** and create your branch from `main`
+2. **Make your changes** and ensure tests pass
+3. **Update documentation** if needed
+4. **Submit a pull request** with a clear description
+
+For major changes, please open an issue first to discuss what you would like to change.
 
 ## 📄 License
 
